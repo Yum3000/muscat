@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Practce1</string>
+    <string name="info">Инфо</string>
+    <string name="Stats">Статистика</string>
+    <string name="Folders">Мои папки</string>
+    <string name="Search">Поиск</string>
+    <string name="mew">MEW</string>
+    <string name="text">Это справочный раздел. Здесь будет информация о приложении и пользовательском интерфейсе.</string>
+    <string name="returnMenu">Return to the menu.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="test_fragment">Test fragment</string>
+</resources>
