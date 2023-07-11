@@ -3,7 +3,9 @@
     <string name="info">Инфо</string>
     <string name="Stats">Статистика</string>
     <string name="Folders">Мои папки</string>
+    <string name="test_request">TEST REQUEST</string>
     <string name="Search">Поиск</string>
+    <string name="SearchHint">Введите имя исполнителя</string>
     <string name="mew">MEW</string>
     <string name="text">Это справочный раздел. Здесь будет информация о приложении и пользовательском интерфейсе.</string>
     <string name="returnMenu">Return to the menu.</string>

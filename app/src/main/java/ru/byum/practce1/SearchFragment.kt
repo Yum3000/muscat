@@ -1,10 +1,19 @@
 package ru.byum.practce1
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.SearchEvent
 import android.view.ViewGroup
+import android.widget.SearchView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import android.util.Log
+import android.widget.Button
+import android.widget.CheckBox
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,8 +42,16 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        // You can't use directly findViewById in fragments, you have to use it with root view,
+        // in your onCreateView you are returning the root view. Your other views are inside the
+        // root view. So if you want to access a view inside root you should use like this before
+        // returning the root view
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        val root = inflater.inflate(R.layout.fragment_search, container, false)
+        val searchView = root.findViewById<SearchView>(R.id.vSearch)
+        return root
     }
 
     companion object {

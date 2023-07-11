@@ -8,6 +8,14 @@ import android.widget.TextView
 import android.widget.Button
 import android.util.Log
 import android.content.Intent
+import androidx.appcompat.widget.SearchView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.byum.practce1.retrofit.Product
+import ru.byum.practce1.retrofit.ProductApi
 
 public const val TAG = "MainActivity"
 
@@ -20,12 +28,13 @@ class MainActivity: AppCompatActivity() {
 
         val btSearch: Button = findViewById<Button>(R.id.btSearch)
         val btFolders: Button = findViewById<Button>(R.id.btFolders)
-        val myTextView: TextView = findViewById(R.id.myTextView)
         val btInfo: Button = findViewById<Button>(R.id.btInfo)
+
+        val tv : TextView = findViewById(R.id.myTextView)
 
         btSearch.setOnClickListener {
             Log.i(TAG, "GO TO SEARCH")
-            val intent1 = Intent(this, SearchActivity::class.java)
+            val intent1 = Intent(this, SearchActivity2::class.java)
             startActivity(intent1)
         }
 
