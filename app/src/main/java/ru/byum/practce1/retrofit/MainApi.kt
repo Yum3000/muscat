@@ -6,11 +6,16 @@ import retrofit2.http.Path
 import retrofit2.http.Body
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Headers
 
 interface MainApi {
+
     @GET("products/{id}")
     suspend fun getProductById(@Path("id") id : Int): Product
 
     @POST("auth/login")
     fun auth(@Body authRequest: AuthRequest): Call<User>
+
+    @GET("users")
+    fun getUsers() : Call<MutableList<User>>
 }

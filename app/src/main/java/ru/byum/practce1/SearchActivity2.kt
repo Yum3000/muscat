@@ -33,18 +33,23 @@ import retrofit2.Response
 import com.google.gson.Gson
 import org.json.JSONObject
 import org.json.JSONTokener
+import ru.byum.practce1.databinding.ActivitySearch2Binding
 
 class SearchActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // The generated binding class links the layout variables with the views within the layout.
+        val binding: ActivitySearch2Binding = ActivitySearch2Binding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search2)
+        setContentView(binding.root)
+
+        //setContentView(R.layout.activity_search2)
 
         val bt_getRequest: Button? = findViewById(R.id.btRequest)
         val tvMyText: TextView = findViewById(R.id.myTextView)
         val tvMyText2: TextView = findViewById(R.id.myTextView2)
-        val etText : EditText = findViewById(R.id.etText)
+        val etText: EditText = findViewById(R.id.etText)
 
-        val etText2 : EditText = findViewById(R.id.etText2)
+        val etText2: EditText = findViewById(R.id.etText2)
 
         // журнал для отслеживания запросов на и с сервера в logcat
         val interceptor = HttpLoggingInterceptor()
@@ -57,10 +62,18 @@ class SearchActivity2 : AppCompatActivity() {
 
         fun onEditTextWatcher(): TextWatcher {
             return object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    val num : Int = etText.text.toString().toInt()
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    val num: Int = etText.text.toString().toInt()
+                }
+
                 override fun afterTextChanged(s: Editable) {
 
                 }
@@ -75,9 +88,10 @@ class SearchActivity2 : AppCompatActivity() {
 
         bt_getRequest?.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val user = MainApi.auth(AuthRequest(etText.text.toString(), etText2.text.toString()))
+                val user =
+                    MainApi.auth(AuthRequest(etText.text.toString(), etText2.text.toString()))
                 Log.i(TAG, "!!!!${user}")
-                user.enqueue(object: Callback<User> {
+                user.enqueue(object : Callback<User> {
                     override fun onResponse(call: Call<User>, response: Response<User>) {
                         if (response.code() == 200) {
                             val test = response.body()
@@ -87,19 +101,44 @@ class SearchActivity2 : AppCompatActivity() {
                             tvMyText2.text = test?.lastName
                         }
                     }
+
                     override fun onFailure(call: Call<User>, t: Throwable) {
                     }
                 })
-                //runOnUiThread{
-
-                //}
             }
         }
+
+        val btGetUsers: Button? = findViewById(R.id.btGetUsers)
+
+        btGetUsers?.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val user = MainApi.getUsers()
+                Log.i(TAG, "!!!!${user}")
+                user.enqueue(object : Callback<MutableList<User>> {
+
+                    override fun onResponse(
+                        call: Call<MutableList<User>>,
+                        response: Response<MutableList<User>>
+                    ) {
+                        if (response.code() == 200) {
+                            val test = response.body()
+
+                            Log.d(TAG, "test ${test}")
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<MutableList<User>>, t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            }
+
+        }
+
     }
 
+    private fun EditText.addTextChangedListener(textWatcher: TextWatcher?, function: () -> Unit) {
+
+    }
 }
-
-private fun EditText.addTextChangedListener(textWatcher: TextWatcher?, function: () -> Unit) {
-
-}
-

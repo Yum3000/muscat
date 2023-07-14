@@ -1,7 +1,7 @@
 package ru.byum.practce1.retrofit
 
 data class User(
-    val id: Int,
+    var id: Int,
     val username: String,
     val email: String,
     val firstName: String,
