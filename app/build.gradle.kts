@@ -85,6 +85,10 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
 
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
     // Arch Components
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

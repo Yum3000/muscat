@@ -20,12 +20,12 @@ class MusicViewModel @Inject constructor(
 
     fun getRelease() {
         viewModelScope.launch {
-            val release  = musicRepository.getRelease("123")
+            val release  = musicRepository.getRelease("1234")
             if (release != null) {
                 _uiState.update {
                     it.copy(
                         title = release.title,
-                        released = release.released,
+                        year = release.year,
                     )
                 }
             }
@@ -35,5 +35,6 @@ class MusicViewModel @Inject constructor(
 
 data class MusicUiState(
     val title: String = "---",
-    val released: String = "---",
+    val year: String = "---",
 )
+
