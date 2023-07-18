@@ -1,5 +1,6 @@
 package ru.byum.muscat.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,10 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.List
+import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,25 +74,31 @@ internal fun MainScreen(
                 .fillMaxWidth()
                 .padding(top = 54.dp),
             //horizontalArrangement = Arrangement.spacedBy(16.dp)
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            //verticalAlignment = Alignment.Bottom
         ) {
 
-            IconButton(
-                modifier = Modifier.width(196.dp),
+            Button(
+                modifier = Modifier.width(165.dp).height(45.dp).
+                background(brush = Brush.verticalGradient(colors =
+                listOf(Color.Black, Color.Blue)),
+                    shape = RoundedCornerShape(23.dp),),
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("search") }) {
 
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "Search",
-                    tint = Color(0xFF2EB674),
-                    modifier = Modifier.size(96.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(45.dp)
                 )
 
-                Spacer(modifier = Modifier.width(width = 138.dp))
+                //Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
                     text = "Search",
-                    color = Color(0xFF2EB674),
-                    fontSize = 20.sp
+                    color = Color.White,
+                    fontSize = 23.sp
                 )
             }
 
@@ -97,10 +113,29 @@ internal fun MainScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier.width(96.dp),
+                modifier = Modifier.width(165.dp).height(45.dp).
+                background(brush = Brush.verticalGradient(colors =
+                listOf(Color.Black, Color.Blue)),
+                    shape = RoundedCornerShape(23.dp),),
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("second") }) {
-                Text("Second Screen")
+
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "Second",
+                    tint = Color.White,
+                    modifier = Modifier.size(45.dp)
+                )
+
+                //Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                Text(
+                    text = "Second",
+                    color = Color.White,
+                    fontSize = 23.sp
+                )
             }
+
         }
 
         Row(
@@ -111,9 +146,27 @@ internal fun MainScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier.width(96.dp),
+                modifier = Modifier.width(165.dp).height(45.dp).
+                background(brush = Brush.verticalGradient(colors =
+                listOf(Color.Black, Color.Blue)),
+                    shape = RoundedCornerShape(23.dp),),
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("stats") }) {
-                Text("Stats Screen")
+
+
+                Icon(
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = "Stats",
+                    tint = Color.White,
+                    modifier = Modifier.size(45.dp)
+                )
+
+                Text(
+                    text = "Stats",
+                    color = Color.White,
+                    fontSize = 23.sp
+                )
             }
         }
 

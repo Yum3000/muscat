@@ -18,10 +18,10 @@ interface MusicRepository {
 
 class DefaultMusicRepository @Inject constructor(
     private val musicDao: MusicDao,
-    //private val discogs: DiscogsAPI
+    private val discogs: DiscogsAPI
 ) : MusicRepository {
 
-    private val discogs = RetrofitInstance.create
+    //private val discogs = RetrofitInstance.create
 
     override suspend fun getRelease(id: String): Release? {
         return discogs.getRelease("1234")?.toRelease()

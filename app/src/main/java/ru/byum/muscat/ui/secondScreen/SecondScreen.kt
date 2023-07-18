@@ -1,5 +1,4 @@
-package ru.byum.muscat.ui.main
-
+package ru.byum.muscat.ui.secondScreen
 
 import android.graphics.drawable.Icon
 import android.os.Build
@@ -31,20 +30,21 @@ import java.time.format.TextStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StatsScreen (modifier: Modifier = Modifier, navController: NavController){
+fun SecondScreen (modifier: Modifier = Modifier, navController: NavController){
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Statistic Screen" ,
+            text = "Second Screen\n" +
+                    "Click me to go to First Screen",
             color = Color.Green,
             style = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center),
-            modifier = Modifier.padding(24.dp)//.clickable(onClick = {
+            modifier = Modifier.padding(24.dp).clickable(onClick = {
                 // this will navigate to second screen
-             //   navController.navigate("main")
-           // })
+                navController.navigate("main")
+            })
         )
     }
 

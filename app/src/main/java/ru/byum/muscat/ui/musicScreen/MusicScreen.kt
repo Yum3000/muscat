@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.main
+package ru.byum.muscat.ui.musicScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import androidx.navigation.NavHostController
+import ru.byum.muscat.ui.main.MusicViewModel
 
 
 @Composable
@@ -55,6 +57,7 @@ internal fun MusicScreen(
 
         )
     {
+
         Text(
             text = "Search Screen",
             color = Color.Green,

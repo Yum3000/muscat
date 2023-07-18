@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.main
+package ru.byum.muscat.ui.infoScreen
 
 import android.graphics.drawable.Icon
 import android.os.Build
