@@ -8,7 +8,7 @@ import ru.byum.muscat.data.network.DiscogsAPI
 import javax.inject.Inject
 
 interface MusicRepository {
-    suspend fun getRelease(id: String): Release?
+    suspend fun getRelease(id: Int): Release?
     val musics: Flow<List<String>>
 
     suspend fun add(name: String)
@@ -18,8 +18,8 @@ class DefaultMusicRepository @Inject constructor(
     private val musicDao: MusicDao,
     private val discogs: DiscogsAPI
 ) : MusicRepository {
-    override suspend fun getRelease(id: String): Release? {
-        return discogs.getRelease("123")?.toRelease()
+    override suspend fun getRelease(id: Int): Release? {
+        return discogs.getRelease(id)?.toRelease()
     }
 
     override val musics: Flow<List<String>> =

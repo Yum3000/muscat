@@ -6,5 +6,5 @@ import retrofit2.http.Path
 
 interface RetrofitDiscogsAPI {
     @GET("releases/{id}")
-    suspend fun getRelease(@Path("id") id: String): Response<ReleaseNetwork>
+    suspend fun getRelease(@Path("id") id: Int): Response<ReleaseNetwork>
 }
