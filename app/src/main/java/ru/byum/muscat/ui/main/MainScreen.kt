@@ -11,18 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -38,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import androidx.navigation.NavHostController
+import ru.byum.muscat.ui.musicScreen.MusicViewModel
 
 
 @Composable
@@ -123,14 +119,14 @@ internal fun MainScreen(
 
                 Icon(
                     imageVector = Icons.Rounded.Search,
-                    contentDescription = "Second",
+                    contentDescription = "Folders",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
                 )
 
                 //Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
-                    text = "Second",
+                    text = "Folders",
                     color = Color.White,
                     fontSize = 23.sp
                 )
@@ -177,23 +173,27 @@ internal fun MainScreen(
             //horizontalArrangement = Arrangement.spacedBy(16.dp)
             horizontalArrangement = Arrangement.Center
         ) {
-            IconButton(
-                modifier = Modifier.width(96.dp),
+            Button(
+                modifier = Modifier.width(165.dp).height(45.dp).
+                background(brush = Brush.verticalGradient(colors =
+                listOf(Color.Black, Color.Blue)),
+                    shape = RoundedCornerShape(23.dp),),
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("info") }) {
-                //Text("Info Screen")
+
 
                 Icon(
                     imageVector = Icons.Rounded.Info,
                     contentDescription = "Info",
-                    tint = Color(0xFF2EB674),
-                    modifier = Modifier.size(96.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(45.dp)
                 )
 
-                Spacer(modifier = Modifier.width(width = 38.dp))
                 Text(
-                    text = "Info Screen",
-                    color = Color(0xFF2EB674),
-                    fontSize = 20.sp
+                    text = "Info",
+                    color = Color.White,
+                    fontSize = 23.sp
                 )
             }
         }

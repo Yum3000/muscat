@@ -1,7 +1,14 @@
 package ru.byum.muscat.data.network
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 data class ReleaseNetwork(
-    val id: String,
-    val title: String,
-    val year: String,
+    @JsonProperty("id") val id: Int,
+    @JsonProperty ("title") val title: String,
+    @JsonProperty ("year") val year: String,
+
 )

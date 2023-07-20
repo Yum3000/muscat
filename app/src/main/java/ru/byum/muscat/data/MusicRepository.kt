@@ -10,7 +10,8 @@ import ru.byum.muscat.data.network.RetrofitInstance
 import javax.inject.Inject
 
 interface MusicRepository {
-    suspend fun getRelease(id: String): Release?
+    suspend fun getRelease(id: Int): Release?
+    suspend fun onSearch(query:String) : ReleaseSearchResults?
     val musics: Flow<List<String>>
 
     suspend fun add(name: String)
@@ -21,10 +22,12 @@ class DefaultMusicRepository @Inject constructor(
     private val discogs: DiscogsAPI
 ) : MusicRepository {
 
-    //private val discogs = RetrofitInstance.create
+    override suspend fun getRelease(id: Int): Release? {
+        return discogs.getRelease(id)?.toRelease()
+    }
 
-    override suspend fun getRelease(id: String): Release? {
-        return discogs.getRelease("1234")?.toRelease()
+    override suspend fun onSearch(query: String): ReleaseSearchResults? {
+        return discogs.onSearch(query)
     }
 
     override val musics: Flow<List<String>> =
