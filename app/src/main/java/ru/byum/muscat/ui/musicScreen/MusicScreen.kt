@@ -1,6 +1,7 @@
 package ru.byum.muscat.ui.musicScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,21 +21,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposableInferredTarget
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,24 +41,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.NavHostController
-import androidx.room.util.query
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.flow.asStateFlow
 import ru.byum.muscat.data.ReleaseSearchResult
-import ru.byum.muscat.data.ReleaseSearchResults
-
 import androidx.compose.material.icons.outlined.Star
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
+import ru.byum.muscat.data.ArtistsSearchResult
+import ru.byum.muscat.data.ReleaseSearchResults
+import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
 
+//public val <T : Any> Class<T>.kotlin: KClass<T>
+//    @JvmName("getKotlinClass")
+//    get() = Reflection.getOrCreateKotlinClass(this) as KClass<T>
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -77,15 +71,15 @@ fun MusicScreen(
     navController:NavHostController) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val searchString by viewModel.searchString.collectAsState()
-
-
-    val released = state.year
-    val title = state.title
-
-    fun onGet() {
-        viewModel.getRelease()
-    }
+//    val searchString by viewModel.searchString.collectAsState()
+//
+//
+//    val released = state.year
+//    val title = state.title
+//
+//    fun onGet() {
+//        viewModel.getRelease()
+//    }
 
 
     var text by remember { mutableStateOf("") }
@@ -117,8 +111,15 @@ fun MusicScreen(
         )
         {
         }
-
         DisplayList(results = viewModel.listCurrentResults)
+
+//        val test = ReleaseSearchResults::class.java.kotlin
+//        Log.d(TAG, "BEFORE DISPLAYLIST ${test}")
+//
+//        DisplayList(results = test)
+//        Log.d(TAG, "AFTER DISPLAYLIST ${test}")
+        
+
 
         Row(
             modifier = Modifier
@@ -189,49 +190,146 @@ fun DisplayList(results: ReleaseSearchResults?) {
     if (results != null) {
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(Color.Transparent)
                 .size(300.dp)
                 .padding(horizontal = 8.dp)
                 .verticalScroll(state),
             verticalArrangement = Arrangement.Center,
         ) {
-                results.results?.forEach {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Transparent)
-                            .padding(10.dp)
-                    ) {
+
+            results.results?.forEach {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.Transparent)
+                        .padding(10.dp)
+                ) {
                     Text(
-                        text = "id:${it?.id}, \n" +
-                                "title:${it?.title},\n" +
-                                "year:${it?.year}",
+                        text = "id:${it.id}, \n" +
+                                "title:${it.title},\n" +
+                                "year:${it.year}",
                         color = Color.Magenta, fontSize = 30.sp
                     )
 
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(it?.cover_image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(it.cover_image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
 
-                            modifier =  Modifier.height(100.dp).width(100.dp),
-                        alignment = Alignment.BottomEnd)
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp),
+                        alignment = Alignment.BottomEnd
+                    )
 
-                        RaitingBar()
-
+                    RaitingBar()
 
 
                 }
             }
         }
     }
-
 }
+
+// !!! NEW VERSION OF DISPLAYLIST
+//@Composable
+//fun <T:Any> DisplayList(results: KClass<T>) {
+//    val state = rememberScrollState()
+//    LaunchedEffect(Unit) { state.animateScrollTo(100) }
+//    Log.d(TAG, "INTO DISPLAYLIST ${results}")
+//
+//    if (results != null) {
+//
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.Transparent)
+//                .size(300.dp)
+//                .padding(horizontal = 8.dp)
+//                .verticalScroll(state),
+//            verticalArrangement = Arrangement.spacedBy(15.dp),
+//        ) {
+//
+//            results.declaredMemberProperties.forEach {
+//
+//                val test = it.getter.parameters
+//                    //val innerProp = dataClass.memberProperties
+//                    Log.d(TAG, "DisplayList! ${test.'<get-results>'()}")
+//                    //Log.d(TAG, "INNER DisplayList! ${innerProp}")
+//                val dataClass = test::class.java.kotlin
+//                    GetData(data = dataClass)
+//                }
+//            }
+//        }
+//    }
+//
+//
+//@Composable
+//fun <T:Any> GetData(data: KClass<T>) {
+//    Log.d(TAG, "IN GET DATA ${data.objectInstance}")
+//    Box(
+//        contentAlignment = Alignment.TopStart,
+//        modifier = Modifier
+//            .clip(RoundedCornerShape(10.dp))
+//            .background(Color.Transparent)
+//            .padding(10.dp)
+//    ) {
+//        if (data == ReleaseSearchResult::class.java.kotlin) {
+//
+//            data.memberProperties.forEach {
+//                Log.d(TAG, "IN GET DATA ${it}")
+//            }
+//
+//            Text(
+//
+//                text = //"id:${data.declaredMemberProperties.
+//                //typeParameters.get(0)}, \n" +
+//                        "title:${data.typeParameters.get(1)},\n" +
+//                        "year:${data.typeParameters.get(2)}",
+//                color = Color.Magenta, fontSize = 30.sp
+//            )
+//
+//
+//            Box(
+//                contentAlignment = Alignment.BottomEnd,
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(10.dp))
+//                    .background(Color.Transparent)
+//                    .padding(10.dp)
+//            ) {
+//
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(2f),
+//                    horizontalArrangement = Arrangement.End,
+//                    verticalAlignment = Alignment.Bottom
+//                ) {
+//
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(LocalContext.current)
+//                            .data(data?.typeParameters?.get(3))
+//                            .crossfade(true)
+//                            .build(),
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Fit,
+//
+//                        modifier = Modifier
+//                            .height(100.dp)
+//                            .width(100.dp),
+//                        alignment = Alignment.BottomEnd
+//                    )
+//
+//                    RaitingBar()
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun RaitingBar(

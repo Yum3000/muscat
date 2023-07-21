@@ -88,6 +88,8 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    // convert kotlin?
+    implementation ("org.jetbrains.kotlin:kotlin-reflect:1.8.20")
 
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
