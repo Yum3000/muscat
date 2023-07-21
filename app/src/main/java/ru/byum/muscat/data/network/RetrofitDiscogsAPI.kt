@@ -7,6 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.byum.muscat.data.ArtistsSearchResults
 import ru.byum.muscat.data.ReleaseSearchResults
 
 interface RetrofitDiscogsAPI {
@@ -18,4 +19,9 @@ interface RetrofitDiscogsAPI {
     suspend fun onSearch(@Query("query") query: String, @Query("type") type : String,
                          @Query("token") token:String) :
             Response<ReleaseSearchResults>
+
+    @GET("/database/search?")
+    suspend fun onSearchArtists(@Query("query") query: String, @Query("type") type : String,
+                         @Query("token") token:String) :
+            Response<ArtistsSearchResults>
 }

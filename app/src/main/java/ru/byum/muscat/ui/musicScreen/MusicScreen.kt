@@ -65,6 +65,7 @@ import ru.byum.muscat.data.ReleaseSearchResult
 import ru.byum.muscat.data.ReleaseSearchResults
 
 import androidx.compose.material.icons.outlined.Star
+import ru.byum.muscat.data.ArtistsSearchResults
 
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
@@ -95,7 +96,7 @@ fun MusicScreen(
     Scaffold {
         SearchBar(query = text,
             onQueryChange = {text=it},
-            onSearch = {viewModel.onSearch(text)
+            onSearch = {viewModel.onSearchArtists(text)
                 active = false},
             active = active,
             onActiveChange = {active = it},
@@ -118,7 +119,9 @@ fun MusicScreen(
         {
         }
 
-        DisplayList(results = viewModel.listCurrentResults)
+        //DisplayList(results = viewModel.listCurrentResults)
+        DisplayListArtists(results = viewModel.listCurrentArtists)
+
 
         Row(
             modifier = Modifier
@@ -225,6 +228,56 @@ fun DisplayList(results: ReleaseSearchResults?) {
                         RaitingBar()
 
 
+
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun DisplayListArtists(results: ArtistsSearchResults?) {
+    val state = rememberScrollState()
+    LaunchedEffect(Unit) { state.animateScrollTo(100) }
+
+    if (results != null) {
+
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.Transparent)
+                .size(300.dp)
+                .padding(horizontal = 8.dp)
+                .verticalScroll(state),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            results.results?.forEach {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.Transparent)
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = "id:${it?.id}, \n" +
+                                "title:${it?.title},\n",// +
+                                //"year:${it?.year}",
+                        color = Color.Magenta, fontSize = 30.sp
+                    )
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(it?.cover_image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+
+                        modifier =  Modifier.height(100.dp).width(100.dp),
+                        alignment = Alignment.BottomEnd)
+
+                    RaitingBar()
 
                 }
             }

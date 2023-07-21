@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.byum.muscat.data.ArtistsSearchResults
 import ru.byum.muscat.data.MusicRepository
 import ru.byum.muscat.data.ReleaseSearchResult
 import ru.byum.muscat.data.ReleaseSearchResults
@@ -35,6 +36,7 @@ class MusicViewModel @Inject constructor(
     val movies = _movies.asStateFlow()
 
     var listCurrentResults: ReleaseSearchResults? = null
+    var listCurrentArtists: ArtistsSearchResults? = null
 
     fun onSearchStringChange(searchString: String){
         _searchString.value = searchString
@@ -62,10 +64,36 @@ class MusicViewModel @Inject constructor(
             val response = musicRepository.onSearch(searchString)
             listCurrentResults = response
 
+            val response2 = musicRepository.onSearchArtists(searchString)
+            listCurrentArtists = response2
+
             Log.d(TAG, "test VIEW MODEL {$response}")
             if (response != null) {
 
                 Log.d(TAG, "THIS!!!! ${response.results?.get(1)}")
+
+                _uiState.update {
+                    it.copy(
+                        title = searchString,
+                        year = searchString,
+                    )
+                }
+            }
+        }
+    }
+
+    fun onSearchArtists(searchString: String) {
+
+        viewModelScope.launch(Dispatchers.IO){
+            //_uiState.value = Status.Loading(null)
+
+            val response2 = musicRepository.onSearchArtists(searchString)
+            listCurrentArtists = response2
+
+            Log.d(TAG, "test VIEW MODEL {$response2}")
+            if (response2 != null) {
+
+                Log.d(TAG, "THIS!!!! ${response2.results?.get(1)}")
 
                 _uiState.update {
                     it.copy(

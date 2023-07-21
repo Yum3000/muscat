@@ -12,6 +12,7 @@ import javax.inject.Inject
 interface MusicRepository {
     suspend fun getRelease(id: Int): Release?
     suspend fun onSearch(query:String) : ReleaseSearchResults?
+    suspend fun onSearchArtists(query:String) : ArtistsSearchResults?
     val musics: Flow<List<String>>
 
     suspend fun add(name: String)
@@ -28,6 +29,10 @@ class DefaultMusicRepository @Inject constructor(
 
     override suspend fun onSearch(query: String): ReleaseSearchResults? {
         return discogs.onSearch(query)
+    }
+
+    override suspend fun onSearchArtists(query: String): ArtistsSearchResults? {
+        return discogs.onSearchArtists(query)
     }
 
     override val musics: Flow<List<String>> =
