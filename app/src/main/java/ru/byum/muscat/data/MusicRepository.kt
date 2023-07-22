@@ -7,6 +7,7 @@ import javax.inject.Inject
 interface MusicRepository {
     suspend fun searchReleases(query:String) : ReleaseSearchResults?
     suspend fun searchArtists(query:String) : ArtistsSearchResults?
+    suspend fun getReleases(id:Int?): ArtistReleases?
 }
 
 class DefaultMusicRepository @Inject constructor(
@@ -19,5 +20,9 @@ class DefaultMusicRepository @Inject constructor(
 
     override suspend fun searchArtists(query: String): ArtistsSearchResults? {
         return discogs.searchArtists(query)
+    }
+
+    override suspend fun getReleases(id: Int?): ArtistReleases? {
+        return discogs.getArtistReleases(id)
     }
 }

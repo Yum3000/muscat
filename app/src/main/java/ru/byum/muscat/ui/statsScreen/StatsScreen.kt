@@ -41,10 +41,7 @@ fun StatsScreen (modifier: Modifier = Modifier, navController: NavController){
             text = "Statistic Screen" ,
             color = Color.Green,
             style = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center),
-            modifier = Modifier.padding(24.dp)//.clickable(onClick = {
-                // this will navigate to second screen
-             //   navController.navigate("main")
-           // })
+            modifier = Modifier.padding(24.dp)
         )
     }
 
@@ -54,7 +51,7 @@ fun StatsScreen (modifier: Modifier = Modifier, navController: NavController){
             .padding(bottom = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        IconButton(modifier = Modifier.width(96.dp), onClick = { navController.navigate("main")}) {
+        IconButton(modifier = Modifier.width(96.dp), onClick = { navController.popBackStack()}) {
             Icon(Icons.Filled.ArrowBack, modifier = Modifier.size(128.dp), contentDescription = "Back")
         }
     }

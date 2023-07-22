@@ -20,8 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +56,11 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.navigation.compose.rememberNavController
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistsSearchResults
 
@@ -78,7 +84,7 @@ fun MusicScreen(
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.width(96.dp),
-                        onClick = { navController.navigate("main") }
+                        onClick = { navController.popBackStack() }
                     ) {
                         Icon(
                             Icons.Filled.ArrowBack,
@@ -99,7 +105,8 @@ fun MusicScreen(
                         },
                         active = false,
                         onActiveChange = { active = it },
-                        placeholder = { Text(text = "Search HERE") },
+                        // ????
+                        placeholder = { Text(text = "Search HERE", fontSize = 20.sp) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Search,
@@ -122,7 +129,7 @@ fun MusicScreen(
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = "test"
+                            contentDescription = "menu"
                         )
                     }
 
@@ -157,7 +164,7 @@ fun MusicScreen(
         Box(modifier = Modifier.padding(padding)) {
             if (searchType == SearchType.ARTIST) {
                 val searchList by viewModel.ArtistsSearchResult.collectAsState()
-                ArtistsList(results = searchList)
+                ArtistsList(results = searchList, navController = navController)
             } else if (searchType == SearchType.RELEASE) {
                 val searchList by viewModel.ReleasesSearchResult.collectAsState()
                 ReleasesList(results = searchList)
@@ -167,70 +174,11 @@ fun MusicScreen(
 }
 
 @Composable
-fun ReleasesList(results: ReleaseSearchResults?) {
+fun ReleasesList(
+    viewModel: MusicViewModel = hiltViewModel(),
+    results: ReleaseSearchResults?
+) {
     val state = rememberScrollState()
-    //LaunchedEffect(Unit) { state.animateScrollTo(100) }
-
-    if (results != null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(state),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            results.results?.forEach {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Transparent)
-                        .padding(10.dp)
-                ) {
-                    Text(
-                        text = "id:${it?.id}, \n" + "title:${it?.title},\n" + "year:${it?.year}",
-                        color = Color.Magenta,
-                        fontSize = 30.sp
-                    )
-
-                    val coverImg: String = ""
-                    if (it?.cover_image != "") {
-                        AsyncImage(
-
-                            model = ImageRequest.Builder(LocalContext.current).data(it?.cover_image)
-                                .crossfade(true).build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-
-                            modifier = Modifier
-                                .height(100.dp)
-                                .width(100.dp),
-                            alignment = Alignment.BottomEnd
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.no_image),
-                            contentDescription = ""
-                        )
-                    }
-
-                    var rating by remember { mutableStateOf(3) }
-                    RatingBar(
-                        rating = rating,
-                        onRatingChanged = { newRating ->
-                            rating = newRating
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ArtistsList(results: ArtistsSearchResults?) {
-    val state = rememberScrollState()
-
-    //LaunchedEffect(Unit) { state.animateScrollTo(100) }
 
     if (results == null) {
         return
@@ -265,21 +213,82 @@ fun ArtistsList(results: ArtistsSearchResults?) {
                     modifier = Modifier.background(Color.Transparent)
                 ) {
                     Text(
-                        text = "id:${it?.id}, \n" + "title:${it?.title},\n",// +"year:${it?.year}",
-                        color = Color.Magenta, fontSize = 30.sp
+                        text = "id:${it?.id}, \n" + "title:${it?.title},\n" + "year:${it?.year}",
+                        color = Color.Magenta, fontSize = 30.sp,
+                        fontFamily = FontFamily.SansSerif
                     )
-                    var rating by remember { mutableStateOf(3) }
+
+                    var currentRating by remember { mutableStateOf(1) }
                     RatingBar(
-                        rating = rating,
-                        onRatingChanged = { newRating -> rating = newRating },
+                        rating = currentRating,
+                        onRatingChanged = { newRating -> currentRating = newRating },
                     )
-
                 }
-
             }
         }
     }
+}
 
+@Composable
+fun ArtistsList(
+    viewModel: MusicViewModel = hiltViewModel(),
+    results: ArtistsSearchResults?,
+    navController: NavHostController
+) {
+    val state = rememberScrollState()
+
+    if (results == null) {
+        return
+    }
+
+    Column(
+        modifier = Modifier.verticalScroll(state),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        results.results?.forEach {
+            Row(modifier = Modifier.padding(10.dp)) {
+                if (it.thumb != "" && it.thumb != null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).data(it?.cover_image)
+                            .crossfade(true).build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(100.dp),
+                        alignment = Alignment.BottomEnd
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.music_note),
+                        contentDescription = ""
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = "id:${it?.id}, \n" + "title:${it?.title},\n",
+                        color = Color.Magenta, fontSize = 30.sp,
+                        fontFamily = FontFamily.SansSerif
+                    )
+
+                    IconButton(
+                        onClick = { navController.navigate("artistScreen/${it?.id}") }
+                    ) {
+                        Icon(Icons.Default.List, contentDescription = "artist page")
+                    }
+
+                    var currentRating by remember { mutableStateOf(1) }
+
+                    RatingBar(
+                        rating = currentRating,
+                        onRatingChanged = { newRating -> currentRating = newRating },
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -287,21 +296,25 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     rating: Int = 0,
     maxRating: Int = 10,
-    stars: Int = 5,
-    starsColor: Color = Color.Yellow,
+    starsColor: Color = Color.Magenta,
     onRatingChanged: (Int) -> Unit
 ) {
-//    Row(modifier = modifier) {
-//        Icon(
-//            imageVector = Icons.Outlined.Star, contentDescription = null, tint = starsColor
-//        )
-//    }
 
     Row {
         for (i in 1..maxRating) {
-            IconButton(onClick = { onRatingChanged(i) }) {
-                Icon(Icons.Outlined.Star, contentDescription = null)
-            }
+            Icon(
+                imageVector = if (i <= rating) {
+                    Icons.Filled.Star
+                } else {
+                    Icons.Outlined.Star
+                },
+                contentDescription = null,
+                tint = if (i <= rating) starsColor
+                else Color.Unspecified,
+                modifier = Modifier
+                    .clickable { onRatingChanged(i) }
+                    .padding(2.dp)
+            )
         }
     }
 }

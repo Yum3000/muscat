@@ -53,7 +53,7 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController){
             .padding(bottom = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        IconButton(modifier = Modifier.width(96.dp), onClick = { navController.navigate("main")}) {
+        IconButton(modifier = Modifier.width(96.dp), onClick = { navController.popBackStack()}) {
             Icon(Icons.Filled.ArrowBack, modifier = Modifier.size(128.dp), contentDescription = "Back")
         }
     }

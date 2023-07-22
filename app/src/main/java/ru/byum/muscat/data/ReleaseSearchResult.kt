@@ -8,6 +8,7 @@ data class ReleaseSearchResult(
     @JsonProperty("id") val id: Int?,
     @JsonProperty("year") val year: String?,
     @JsonProperty("title") val title: String?,
+    @JsonProperty("thumb") val thumb: String?,
     @JsonProperty("cover_image") val cover_image: String?
 )
 
