@@ -24,7 +24,7 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
         return ReleaseNetwork(id, "bad response", "0000")
     }
 
-    override suspend fun onSearch(query: String): ReleaseSearchResults? {
+    override suspend fun searchReleases(query: String): ReleaseSearchResults? {
         val response = api.onSearch(query, "release", "MligNYkNjltvekeFWwkfXvNVejHZjkewRsYBgVoQ")
         if(response.isSuccessful) {
             Log.d(TAG, "!!!test2 {$response.body}")
@@ -35,7 +35,7 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
         return response.body()
     }
 
-    override suspend fun onSearchArtists(query: String): ArtistsSearchResults? {
+    override suspend fun searchArtists(query: String): ArtistsSearchResults? {
         val response = api.onSearchArtists(query, "artist", "MligNYkNjltvekeFWwkfXvNVejHZjkewRsYBgVoQ")
         if(response.isSuccessful) {
             Log.d(TAG, "!!!test2 {$response.body}")

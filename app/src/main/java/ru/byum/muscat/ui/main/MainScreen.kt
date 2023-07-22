@@ -37,13 +37,12 @@ import ru.byum.muscat.ui.musicScreen.MusicViewModel
 
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, viewModel: MusicViewModel = hiltViewModel(), navController:NavHostController) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MusicViewModel = hiltViewModel(),
+    navController: NavHostController
+) {
     MainScreen(
-        title = state.title,
-        released = state.year,
-        onGet = viewModel::getRelease,
         modifier = modifier,
         navController = navController
     )
@@ -52,33 +51,30 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: MusicViewModel = hiltVi
 
 @Composable
 internal fun MainScreen(
-    title: String,
-    released: String,
-    onGet: () -> Unit,
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
-        //var nameMusic by remember { mutableStateOf("Compose") }
         verticalArrangement = Arrangement.Center,
-
     )
     {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
-            //horizontalArrangement = Arrangement.spacedBy(16.dp)
             horizontalArrangement = Arrangement.Center,
-            //verticalAlignment = Alignment.Bottom
         ) {
-
             Button(
-                modifier = Modifier.width(165.dp).height(45.dp).
-                background(brush = Brush.verticalGradient(colors =
-                listOf(Color.Black, Color.Blue)),
-                    shape = RoundedCornerShape(23.dp),),
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(45.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color.Black, Color.Blue)
+                        ),
+                        shape = RoundedCornerShape(23.dp),
+                    ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("search") }) {
@@ -90,7 +86,6 @@ internal fun MainScreen(
                     modifier = Modifier.size(45.dp)
                 )
 
-                //Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
                     text = "Search",
                     color = Color.White,
@@ -105,14 +100,19 @@ internal fun MainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
-            //horizontalArrangement = Arrangement.spacedBy(16.dp)
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier.width(165.dp).height(45.dp).
-                background(brush = Brush.verticalGradient(colors =
-                listOf(Color.Black, Color.Blue)),
-                    shape = RoundedCornerShape(23.dp),),
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(45.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors =
+                            listOf(Color.Black, Color.Blue)
+                        ),
+                        shape = RoundedCornerShape(23.dp),
+                    ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("second") }) {
@@ -124,7 +124,6 @@ internal fun MainScreen(
                     modifier = Modifier.size(45.dp)
                 )
 
-                //Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
                 Text(
                     text = "Folders",
                     color = Color.White,
@@ -138,18 +137,22 @@ internal fun MainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
-            //horizontalArrangement = Arrangement.spacedBy(16.dp)
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier.width(165.dp).height(45.dp).
-                background(brush = Brush.verticalGradient(colors =
-                listOf(Color.Black, Color.Blue)),
-                    shape = RoundedCornerShape(23.dp),),
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(45.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors =
+                            listOf(Color.Black, Color.Blue)
+                        ),
+                        shape = RoundedCornerShape(23.dp),
+                    ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("stats") }) {
-
 
                 Icon(
                     imageVector = Icons.Rounded.CheckCircle,
@@ -170,18 +173,22 @@ internal fun MainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
-            //horizontalArrangement = Arrangement.spacedBy(16.dp)
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier.width(165.dp).height(45.dp).
-                background(brush = Brush.verticalGradient(colors =
-                listOf(Color.Black, Color.Blue)),
-                    shape = RoundedCornerShape(23.dp),),
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(45.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors =
+                            listOf(Color.Black, Color.Blue)
+                        ),
+                        shape = RoundedCornerShape(23.dp),
+                    ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("info") }) {
-
 
                 Icon(
                     imageVector = Icons.Rounded.Info,

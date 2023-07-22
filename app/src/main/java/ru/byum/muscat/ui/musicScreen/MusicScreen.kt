@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,10 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -69,27 +67,14 @@ fun MusicScreen(
     viewModel: MusicViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val searchString by viewModel.searchString.collectAsState()
-
-    val released = state.year
-    val title = state.title
-
-    fun onGet() {
-        viewModel.getRelease()
-    }
-
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
+    val searchType by viewModel.searchType.collectAsState()
 
-    //val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier
-                    .background(Color.Yellow),
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.width(96.dp),
@@ -107,7 +92,10 @@ fun MusicScreen(
                         query = text,
                         onQueryChange = { text = it },
                         onSearch = {
-                            viewModel.onSearchArtists(text)
+                            when (searchType) {
+                                SearchType.ARTIST -> viewModel.searchArtists(text)
+                                SearchType.RELEASE -> viewModel.searchReleases(text)
+                            }
                         },
                         active = false,
                         onActiveChange = { active = it },
@@ -137,42 +125,56 @@ fun MusicScreen(
                             contentDescription = "test"
                         )
                     }
+
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(text = "ivafiva") },
-                            onClick = { /*TODO*/ }
+                            text = { Text(text = "Artist") },
+                            onClick = { viewModel.setSearchArtist() },
+                            trailingIcon = {
+                                if (searchType == SearchType.ARTIST) {
+                                    Icon(Icons.Default.Done, contentDescription = "selected")
+                                }
+                            }
+
                         )
                         DropdownMenuItem(
-                            text = { Text(text = "ivafiva 2") },
-                            onClick = { /*TODO*/ }
+                            text = { Text(text = "Release") },
+                            onClick = { viewModel.setSearchRelease() },
+                            trailingIcon = {
+                                if (searchType == SearchType.RELEASE) {
+                                    Icon(Icons.Default.Done, contentDescription = "selected")
+                                }
+                            }
                         )
                     }
                 }
             )
         },
-    ){
-        val searchList by viewModel.listCurrentArtists.collectAsState()
-        //DisplayList(results = viewModel.listCurrentResults)
-        DisplayListArtists(results = searchList)
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            if (searchType == SearchType.ARTIST) {
+                val searchList by viewModel.ArtistsSearchResult.collectAsState()
+                ArtistsList(results = searchList)
+            } else if (searchType == SearchType.RELEASE) {
+                val searchList by viewModel.ReleasesSearchResult.collectAsState()
+                ReleasesList(results = searchList)
+            }
+        }
     }
 }
-//}
 
 @Composable
-fun DisplayList(results: ReleaseSearchResults?) {
+fun ReleasesList(results: ReleaseSearchResults?) {
     val state = rememberScrollState()
-    LaunchedEffect(Unit) { state.animateScrollTo(100) }
+    //LaunchedEffect(Unit) { state.animateScrollTo(100) }
 
     if (results != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Transparent)
-                .size(300.dp)
-                .padding(horizontal = 8.dp)
                 .verticalScroll(state),
             verticalArrangement = Arrangement.Center,
         ) {
@@ -225,65 +227,59 @@ fun DisplayList(results: ReleaseSearchResults?) {
 }
 
 @Composable
-fun DisplayListArtists(results: ArtistsSearchResults?) {
+fun ArtistsList(results: ArtistsSearchResults?) {
     val state = rememberScrollState()
 
-    LaunchedEffect(Unit) { state.animateScrollTo(100) }
+    //LaunchedEffect(Unit) { state.animateScrollTo(100) }
 
-    if (results != null) {
-        Column(
-            modifier = Modifier.verticalScroll(state),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            results.results?.forEach {
-                Row(
-                    modifier = Modifier
-                        .background(Color.Transparent)
-                        .padding(10.dp)
-                ) {
-                    if (it.thumb != "" && it.thumb != null) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current).data(it?.cover_image)
-                                .crossfade(true).build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
+    if (results == null) {
+        return
+    }
 
-                            modifier = Modifier
-                                .height(100.dp)
-                                .width(100.dp),
-                            alignment = Alignment.BottomEnd
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.no_image),
-                            contentDescription = ""
-                        )
-                    }
+    Column(
+        modifier = Modifier.verticalScroll(state),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        results.results?.forEach {
+            Row(modifier = Modifier.padding(10.dp)) {
+                if (it.thumb != "" && it.thumb != null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).data(it?.cover_image)
+                            .crossfade(true).build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
 
-                    Column(
                         modifier = Modifier
-                            .background(Color.Transparent)
-                        //.verticalScroll(state),
-                        //verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "id:${it?.id}, \n" + "title:${it?.title},\n",// +"year:${it?.year}",
-                            color = Color.Magenta, fontSize = 30.sp
-                        )
-                        var rating by remember { mutableStateOf(3) }
-                        RatingBar(
-                            rating = rating,
-                            onRatingChanged = { newRating ->
-                                rating = newRating
-                            },
-                        )
+                            .height(100.dp)
+                            .width(100.dp),
+                        alignment = Alignment.BottomEnd
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.no_image),
+                        contentDescription = ""
+                    )
+                }
 
-                    }
+                Column(
+                    modifier = Modifier.background(Color.Transparent)
+                ) {
+                    Text(
+                        text = "id:${it?.id}, \n" + "title:${it?.title},\n",// +"year:${it?.year}",
+                        color = Color.Magenta, fontSize = 30.sp
+                    )
+                    var rating by remember { mutableStateOf(3) }
+                    RatingBar(
+                        rating = rating,
+                        onRatingChanged = { newRating -> rating = newRating },
+                    )
 
                 }
+
             }
         }
     }
+
 }
 
 @Composable
