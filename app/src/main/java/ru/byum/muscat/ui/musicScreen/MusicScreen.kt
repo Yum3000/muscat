@@ -19,7 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +53,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.data.ReleaseSearchResults
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.res.painterResource
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistsSearchResults
@@ -76,56 +82,84 @@ fun MusicScreen(
 
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
 
     //val context = LocalContext.current
-    Scaffold {
-        Column() {
-            Row(
+    Scaffold(
+        topBar = {
+            TopAppBar(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(36.dp)
-            ) {
-                IconButton(modifier = Modifier.width(96.dp),
-                    onClick = { navController.navigate("main") }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        modifier = Modifier.size(128.dp),
-                        contentDescription = "Back"
-                    )
-                }
-
-                SearchBar(
-                    query = text,
-                    onQueryChange = { text = it },
-                    onSearch = {
-                        viewModel.onSearchArtists(text)
-                    },
-                    active = false,
-                    onActiveChange = { active = it },
-                    placeholder = { Text(text = "Search HERE") },
-                    leadingIcon = {
+                    .background(Color.Yellow),
+                navigationIcon = {
+                    IconButton(
+                        modifier = Modifier.width(96.dp),
+                        onClick = { navController.navigate("main") }
+                    ) {
                         Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search!"
+                            Icons.Filled.ArrowBack,
+                            modifier = Modifier.size(128.dp),
+                            contentDescription = "Back"
                         )
-                    },
-                    trailingIcon = {
-                        if (text.isNotEmpty()) {
+                    }
+                },
+                title = {
+                    SearchBar(
+                        query = text,
+                        onQueryChange = { text = it },
+                        onSearch = {
+                            viewModel.onSearchArtists(text)
+                        },
+                        active = false,
+                        onActiveChange = { active = it },
+                        placeholder = { Text(text = "Search HERE") },
+                        leadingIcon = {
                             Icon(
-                                modifier = Modifier.clickable { text = "" },
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close Icon"
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search!"
                             )
-                        }
-                    }) {}
-            }
-
-            //DisplayList(results = viewModel.listCurrentResults)
-            DisplayListArtists(results = viewModel.listCurrentArtists)
-        }
+                        },
+                        trailingIcon = {
+                            if (text.isNotEmpty()) {
+                                Icon(
+                                    modifier = Modifier.clickable { text = "" },
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Close Icon"
+                                )
+                            }
+                        }) {}
+                },
+                actions = {
+                    IconButton(
+                        onClick = { showMenu = !showMenu }
+                    ) {
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = "test"
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = "ivafiva") },
+                            onClick = { /*TODO*/ }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "ivafiva 2") },
+                            onClick = { /*TODO*/ }
+                        )
+                    }
+                }
+            )
+        },
+    ){
+        val searchList by viewModel.listCurrentArtists.collectAsState()
+        //DisplayList(results = viewModel.listCurrentResults)
+        DisplayListArtists(results = searchList)
     }
 }
+//}
 
 @Composable
 fun DisplayList(results: ReleaseSearchResults?) {
@@ -198,11 +232,7 @@ fun DisplayListArtists(results: ArtistsSearchResults?) {
 
     if (results != null) {
         Column(
-            modifier = Modifier
-                .background(Color.Transparent)
-//                .size(300.dp)
-//                .padding(horizontal = 8.dp)
-                .verticalScroll(state),
+            modifier = Modifier.verticalScroll(state),
             verticalArrangement = Arrangement.Center,
         ) {
             results.results?.forEach {
