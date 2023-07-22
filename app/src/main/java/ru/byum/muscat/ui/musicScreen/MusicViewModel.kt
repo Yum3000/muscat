@@ -90,18 +90,6 @@ class MusicViewModel @Inject constructor(
             val response2 = musicRepository.onSearchArtists(searchString)
             listCurrentArtists = response2
 
-            Log.d(TAG, "test VIEW MODEL {$response2}")
-            if (response2 != null) {
-
-                Log.d(TAG, "THIS!!!! ${response2.results?.get(1)}")
-
-                _uiState.update {
-                    it.copy(
-                        title = searchString,
-                        year = searchString,
-                    )
-                }
-            }
         }
     }
 }

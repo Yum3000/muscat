@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class ArtistsSearchResult(
     @JsonProperty("id") val id: Int?,
     @JsonProperty("title") val title: String?,
+    @JsonProperty("thumb") val thumb: String?,
     @JsonProperty("cover_image") val cover_image: String?
 )
 
