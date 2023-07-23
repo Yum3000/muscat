@@ -80,8 +80,17 @@ fun ArtistScreen(
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
-            val results by viewModel.artistsReleases.collectAsState()
-            ArtistReleasesList(results = results)
+
+            val id by viewModel.artistID.collectAsState()
+
+            if (artistID != id || true) {
+
+                viewModel.setNewArtistID(artistID)
+                viewModel.getReleases(artistID.toInt())
+
+                val results by viewModel.artistsReleases.collectAsState()
+                ArtistReleasesList(results = results)
+            }
         }
     }
 }

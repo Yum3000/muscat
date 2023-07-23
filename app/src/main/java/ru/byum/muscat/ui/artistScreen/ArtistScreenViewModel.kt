@@ -20,14 +20,21 @@ class ArtistScreenViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) : ViewModel() {
 
-        private var _listArtistReleases = MutableStateFlow<ArtistReleases?>(null)
-        var artistsReleases = _listArtistReleases.asStateFlow()
+    private var _listArtistReleases = MutableStateFlow<ArtistReleases?>(null)
+    var artistsReleases = _listArtistReleases.asStateFlow()
+
+    private var _artistID = MutableStateFlow<String?>(null)
+    var artistID = _artistID.asStateFlow()
 
 
-        fun getReleases(id: Int?) {
-            viewModelScope.launch(Dispatchers.IO){
-                val response = musicRepository.getReleases(id)
-                _listArtistReleases.update {response}
-            }
+    fun getReleases(id: Int?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = musicRepository.getReleases(id)
+            _listArtistReleases.update { response }
         }
+    }
+
+    fun setNewArtistID(id: String?) {
+        _artistID.update { id }
+    }
 }

@@ -115,7 +115,7 @@ internal fun MainScreen(
                     ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                onClick = { navController.navigate("second") }) {
+                onClick = { navController.navigate("folders") }) {
 
                 Icon(
                     imageVector = Icons.Rounded.Search,
