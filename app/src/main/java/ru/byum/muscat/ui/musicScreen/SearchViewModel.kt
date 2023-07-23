@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.byum.muscat.data.ArtistReleases
 import ru.byum.muscat.data.ArtistsSearchResults
 import ru.byum.muscat.data.MusicRepository
 import ru.byum.muscat.data.ReleaseSearchResults
@@ -19,17 +18,17 @@ enum class SearchType {
 }
 
 @HiltViewModel
-class MusicViewModel @Inject constructor(
+class SearchViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) : ViewModel() {
     private val _searchType = MutableStateFlow(SearchType.RELEASE)
     val searchType = _searchType.asStateFlow()
 
     private var _listCurrentResults = MutableStateFlow<ReleaseSearchResults?>(null)
-    var ReleasesSearchResult = _listCurrentResults.asStateFlow()
+    var releasesSearchResult = _listCurrentResults.asStateFlow()
 
     private var _listCurrentArtists = MutableStateFlow<ArtistsSearchResults?>(null)
-    var ArtistsSearchResult = _listCurrentArtists.asStateFlow()
+    var artistsSearchResult = _listCurrentArtists.asStateFlow()
 
     fun setSearchArtist() {
         _searchType.update { SearchType.ARTIST }

@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.byum.muscat.ui.infoScreen.InfoScreen
 import ru.byum.muscat.ui.main.MainScreen
-import ru.byum.muscat.ui.musicScreen.MusicScreen
+import ru.byum.muscat.ui.musicScreen.SearchScreen
 import ru.byum.muscat.ui.statsScreen.StatsScreen
 import ru.byum.muscat.ui.artistScreen.ArtistScreen
 import ru.byum.muscat.ui.foldersScreen.FoldersScreen
@@ -24,7 +24,7 @@ fun MainNavigation(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainScreen(modifier = Modifier.padding(16.dp), navController = navController) }
-        composable("search") { MusicScreen(modifier = Modifier.padding(16.dp), navController = navController) }
+        composable("search") { SearchScreen(modifier = Modifier.padding(16.dp), navController = navController) }
         composable("folders") { FoldersScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("info") { InfoScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("stats") { StatsScreen(modifier = Modifier.padding(16.dp), navController) }

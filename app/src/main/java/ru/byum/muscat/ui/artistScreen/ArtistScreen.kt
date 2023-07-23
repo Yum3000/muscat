@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -43,12 +42,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistReleases
-import ru.byum.muscat.data.ReleaseSearchResults
-import ru.byum.muscat.ui.musicScreen.ArtistsList
-import ru.byum.muscat.ui.musicScreen.MusicViewModel
 import ru.byum.muscat.ui.musicScreen.RatingBar
-import ru.byum.muscat.ui.musicScreen.ReleasesList
-import ru.byum.muscat.ui.musicScreen.SearchType
 
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
@@ -60,6 +54,8 @@ fun ArtistScreen(
     modifier: Modifier = Modifier,
     viewModel: ArtistScreenViewModel = hiltViewModel()
 ) {
+    viewModel.init(artistID)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -80,10 +76,8 @@ fun ArtistScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            viewModel.setNewArtistID(artistID)
-
             val rating by viewModel.rating.collectAsState()
-            Text(text = "!!!! ${rating}")
+
             RatingBar(
                 rating = rating,
                 onRatingChanged = { newRating ->

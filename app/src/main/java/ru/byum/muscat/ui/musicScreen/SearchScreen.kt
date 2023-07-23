@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -32,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.InternalComposeApi
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +37,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -56,11 +51,8 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.navigation.compose.rememberNavController
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistsSearchResults
 
@@ -68,9 +60,9 @@ import ru.byum.muscat.data.ArtistsSearchResults
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MusicScreen(
+fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel: MusicViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
     var text by remember { mutableStateOf("") }
@@ -163,10 +155,10 @@ fun MusicScreen(
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
             if (searchType == SearchType.ARTIST) {
-                val searchList by viewModel.ArtistsSearchResult.collectAsState()
+                val searchList by viewModel.artistsSearchResult.collectAsState()
                 ArtistsList(results = searchList, navController = navController)
             } else if (searchType == SearchType.RELEASE) {
-                val searchList by viewModel.ReleasesSearchResult.collectAsState()
+                val searchList by viewModel.releasesSearchResult.collectAsState()
                 ReleasesList(results = searchList)
             }
         }
@@ -175,7 +167,7 @@ fun MusicScreen(
 
 @Composable
 fun ReleasesList(
-    viewModel: MusicViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = hiltViewModel(),
     results: ReleaseSearchResults?
 ) {
     val state = rememberScrollState()
@@ -231,7 +223,7 @@ fun ReleasesList(
 
 @Composable
 fun ArtistsList(
-    viewModel: MusicViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = hiltViewModel(),
     results: ArtistsSearchResults?,
     navController: NavHostController
 ) {

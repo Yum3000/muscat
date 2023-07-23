@@ -10,5 +10,4 @@ data class ReleaseNetwork(
     @JsonProperty("id") val id: Int,
     @JsonProperty ("title") val title: String,
     @JsonProperty ("year") val year: String,
-
 )

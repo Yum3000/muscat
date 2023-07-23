@@ -16,30 +16,28 @@ import javax.inject.Inject
 class ArtistScreenViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
 ) : ViewModel() {
-
     private var _listArtistReleases = MutableStateFlow<ArtistReleases?>(null)
     var artistsReleases = _listArtistReleases.asStateFlow()
 
-    private var _artistID = MutableStateFlow<String?>(null)
+    private var _artistID = MutableStateFlow("")
     var artistID = _artistID.asStateFlow()
 
-    private var _rating = MutableStateFlow<Int>(0)
+    private var _rating = MutableStateFlow(0)
     var rating = _rating.asStateFlow()
 
-    fun getReleases(id: Int?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = musicRepository.getReleases(id)
-            _listArtistReleases.update { response }
+    fun init(id: String) {
+        if (artistID.value != id) {
+            getRating(id)
+            getReleases(id.toInt())
+
+            _artistID.update { id }
         }
     }
 
-    fun setNewArtistID(id: String?) {
-        if (artistID.value != id) {
-            if (id != null) {
-                getRating(id)
-                getReleases(id.toInt())
-            }
-            _artistID.update { id }
+    private fun getReleases(id: Int?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = musicRepository.getReleases(id)
+            _listArtistReleases.update { response }
         }
     }
 

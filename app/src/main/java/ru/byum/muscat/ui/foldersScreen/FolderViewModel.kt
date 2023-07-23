@@ -1,51 +1,35 @@
 package ru.byum.muscat.ui.foldersScreen
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import ru.byum.muscat.data.ArtistReleases
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ru.byum.muscat.data.FolderType
+import ru.byum.muscat.data.MusicRepository
+import javax.inject.Inject
 
-class FolderViewModel : ViewModel(){
+@HiltViewModel
+class FolderViewModel @Inject constructor(
+    private val musicRepository: MusicRepository,
+) : ViewModel() {
+    var folders = musicRepository.folders.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        listOf()
+    )
 
-    enum class FolderType {
-        ARTIST, RELEASES
+    fun deleteFolder(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.deleteFolder(id)
+        }
     }
 
-    data class Folder(
-        val title: String,
-        val type: FolderType
-    )
-
-    private val test = mutableListOf(
-        Folder("num 1", FolderType.ARTIST),
-        Folder("num 2", FolderType.RELEASES),
-        Folder("num 3", FolderType.ARTIST),
-        Folder("num 4", FolderType.RELEASES),
-        Folder("num 5", FolderType.ARTIST),
-        Folder("num 6", FolderType.RELEASES),
-        Folder("num 7", FolderType.ARTIST),
-        Folder("num 8", FolderType.ARTIST)
-    )
-    private val test2 = mutableListOf(
-        Folder("num 1", FolderType.ARTIST),
-        Folder("num 2", FolderType.RELEASES),
-        Folder("num 3", FolderType.ARTIST),
-        Folder("num 4", FolderType.RELEASES),
-        Folder("num 5", FolderType.ARTIST),
-        Folder("num 6", FolderType.RELEASES),
-        Folder("num 7", FolderType.ARTIST),
-        Folder("num 8", FolderType.ARTIST),
-        Folder("num 9", FolderType.ARTIST)
-    )
-
-    private var _listFolders = MutableStateFlow<MutableList<Folder>?>(test)
-    var listFolders = _listFolders.asStateFlow()
-
-    fun CreateFolder () {
-        _listFolders.update { folders ->
-            //folders?.add(Folder("num 9", FolderType.ARTIST))
-            test2
+    fun createFolder(title: String, type: FolderType) {
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.createFolder(title, type)
         }
     }
 }
