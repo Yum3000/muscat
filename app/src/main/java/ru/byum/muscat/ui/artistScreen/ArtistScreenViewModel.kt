@@ -9,15 +9,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.byum.muscat.data.ArtistReleases
-import ru.byum.muscat.data.ArtistsSearchResults
 import ru.byum.muscat.data.MusicRepository
-import ru.byum.muscat.data.ReleaseSearchResults
-import ru.byum.muscat.ui.musicScreen.SearchType
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtistScreenViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
 ) : ViewModel() {
 
     private var _listArtistReleases = MutableStateFlow<ArtistReleases?>(null)
@@ -26,6 +23,8 @@ class ArtistScreenViewModel @Inject constructor(
     private var _artistID = MutableStateFlow<String?>(null)
     var artistID = _artistID.asStateFlow()
 
+    private var _rating = MutableStateFlow<Int>(0)
+    var rating = _rating.asStateFlow()
 
     fun getReleases(id: Int?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,6 +34,26 @@ class ArtistScreenViewModel @Inject constructor(
     }
 
     fun setNewArtistID(id: String?) {
-        _artistID.update { id }
+        if (artistID.value != id) {
+            if (id != null) {
+                getRating(id)
+                getReleases(id.toInt())
+            }
+            _artistID.update { id }
+        }
+    }
+
+    private fun getRating(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val rating = musicRepository.getRating(id)
+            _rating.update { rating }
+        }
+    }
+
+    fun setRating(id: String, rating: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.setRating(id, rating)
+            _rating.update { rating }
+        }
     }
 }

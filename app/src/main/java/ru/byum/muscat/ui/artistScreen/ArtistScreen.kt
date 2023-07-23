@@ -79,16 +79,20 @@ fun ArtistScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
+        Column(modifier = Modifier.padding(padding)) {
+            viewModel.setNewArtistID(artistID)
 
-            val id by viewModel.artistID.collectAsState()
+            val rating by viewModel.rating.collectAsState()
+            Text(text = "!!!! ${rating}")
+            RatingBar(
+                rating = rating,
+                onRatingChanged = { newRating ->
+                    viewModel.setRating(artistID, newRating)
+                },
+            )
 
-            if (artistID != id || true) {
-
-                viewModel.setNewArtistID(artistID)
-                viewModel.getReleases(artistID.toInt())
-
-                val results by viewModel.artistsReleases.collectAsState()
+            val results by viewModel.artistsReleases.collectAsState()
+            if (results != null) {
                 ArtistReleasesList(results = results)
             }
         }
@@ -97,9 +101,7 @@ fun ArtistScreen(
 
 
 @Composable
-fun ArtistReleasesList(
-    results: ArtistReleases?
-) {
+fun ArtistReleasesList(results: ArtistReleases?) {
     val state = rememberScrollState()
 
     if (results == null) {

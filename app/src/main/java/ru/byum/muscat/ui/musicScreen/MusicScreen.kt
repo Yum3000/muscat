@@ -299,18 +299,12 @@ fun RatingBar(
     starsColor: Color = Color.Magenta,
     onRatingChanged: (Int) -> Unit
 ) {
-
     Row {
         for (i in 1..maxRating) {
             Icon(
-                imageVector = if (i <= rating) {
-                    Icons.Filled.Star
-                } else {
-                    Icons.Outlined.Star
-                },
-                contentDescription = null,
-                tint = if (i <= rating) starsColor
-                else Color.Unspecified,
+                imageVector = if (i <= rating) Icons.Filled.Star else Icons.Outlined.Star,
+                tint = if (i <= rating) starsColor else Color.Unspecified,
+                contentDescription = "rating ${i}",
                 modifier = Modifier
                     .clickable { onRatingChanged(i) }
                     .padding(2.dp)

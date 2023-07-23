@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.byum.muscat.data.local.di.DatabaseModule
+import ru.byum.muscat.data.local.di.DatabaseModule_ProvideAppDatabaseFactory
 import java.time.format.TextStyle
 
 
@@ -43,6 +45,9 @@ fun StatsScreen (modifier: Modifier = Modifier, navController: NavController){
             style = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center),
             modifier = Modifier.padding(24.dp)
         )
+
+
+
     }
 
     Row(
