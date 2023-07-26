@@ -1,6 +1,8 @@
 package ru.byum.muscat.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 enum class FolderType {
@@ -14,3 +16,4 @@ data class Folder(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )
+

@@ -243,7 +243,7 @@ fun FoldersList(test: List<Folder>, onDelete: (id: Int) -> Unit, navController: 
                                 fontWeight = FontWeight.W700,
                                 modifier = Modifier
                                     .padding(10.dp)
-                                    .clickable { navController.navigate("FolderScreen") }
+                                    .clickable { navController.navigate("FolderScreen/${folder.id}") }
                             )
 
                             Spacer(

@@ -36,7 +36,12 @@ fun MainNavigation(navController: NavHostController) {
                 modifier = Modifier.padding(16.dp),
             )
         }
-        composable("FolderScreen") { FolderScreen(modifier = Modifier.padding(16.dp), navController) }
+        composable("FolderScreen/{folder_id}") {backStackEntry ->
+            FolderScreen(
+                backStackEntry.arguments?.getString("folder_id")!!,
+                modifier = Modifier.padding(16.dp),
+                navController,
+            )
     }
-
+}
 }

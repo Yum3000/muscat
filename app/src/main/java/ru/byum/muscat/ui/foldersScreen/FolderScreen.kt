@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,9 +23,11 @@ import androidx.navigation.NavController
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FolderScreen(
+    folderID: String,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: FolderViewModel = hiltViewModel(),
+    viewModel: FolderScreenViewModel = hiltViewModel(),
+
 ) {
 //    val folders by viewModel.folders.collectAsStateWithLifecycle()
 //    val typeFolder by viewModel.typeFolder.collectAsState()
@@ -49,6 +52,12 @@ fun FolderScreen(
         },
 
     ) { padding ->
+
+        Button(onClick = { viewModel.addContentIntoFolder(folderID.toInt(), "MEW ARTIST")
+
+        }) {
+            Text(text = "Create new content")
+        }
 
         //Text()
 

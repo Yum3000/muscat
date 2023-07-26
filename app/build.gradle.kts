@@ -94,7 +94,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
 
     //
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
 
     implementation ("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
 
@@ -106,6 +106,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+
 
     // Compose
     implementation(libs.androidx.compose.ui)

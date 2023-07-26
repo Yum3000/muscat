@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fd0b7ff5991695782a64f332fb9bf1c1",
+    "identityHash": "2d38b2348078a08d0a8227f9fb259ca6",
     "entities": [
       {
         "tableName": "Rating",
@@ -61,12 +61,56 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "FoldersContent",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idFolder` INTEGER NOT NULL, `idInstance` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`idFolder`) REFERENCES `Folder`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "idFolder",
+            "columnName": "idFolder",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idInstance",
+            "columnName": "idInstance",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Folder",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idFolder"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd0b7ff5991695782a64f332fb9bf1c1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d38b2348078a08d0a8227f9fb259ca6')"
     ]
   }
 }
