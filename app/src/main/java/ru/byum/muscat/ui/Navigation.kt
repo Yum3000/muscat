@@ -15,7 +15,8 @@ import ru.byum.muscat.ui.main.MainScreen
 import ru.byum.muscat.ui.musicScreen.SearchScreen
 import ru.byum.muscat.ui.statsScreen.StatsScreen
 import ru.byum.muscat.ui.artistScreen.ArtistScreen
-import ru.byum.muscat.ui.foldersScreen.FoldersScreen
+import ru.byum.muscat.ui.foldersScreen.FolderScreen
+import ru.byum.muscat.ui.foldersScreen.FoldersListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -25,7 +26,7 @@ fun MainNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainScreen(modifier = Modifier.padding(16.dp), navController = navController) }
         composable("search") { SearchScreen(modifier = Modifier.padding(16.dp), navController = navController) }
-        composable("folders") { FoldersScreen(modifier = Modifier.padding(16.dp), navController) }
+        composable("folders") { FoldersListScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("info") { InfoScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("stats") { StatsScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("artistScreen/{artist_id}") {backStackEntry ->
@@ -35,6 +36,7 @@ fun MainNavigation(navController: NavHostController) {
                 modifier = Modifier.padding(16.dp),
             )
         }
+        composable("FolderScreen") { FolderScreen(modifier = Modifier.padding(16.dp), navController) }
     }
 
 }

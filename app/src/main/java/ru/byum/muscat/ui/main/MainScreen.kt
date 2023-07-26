@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,11 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.NavHostController
+import ru.byum.muscat.R
 import ru.byum.muscat.ui.musicScreen.SearchViewModel
 
 
@@ -56,6 +60,7 @@ internal fun MainScreen(
     )
     {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
@@ -75,20 +80,58 @@ internal fun MainScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("search") }) {
 
+                Text(
+                    text = "Search ",
+                    textAlign = TextAlign.End,
+                    color = Color.White,
+                    fontSize = 23.sp
+                )
+                Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    imageVector = Icons.Rounded.Search,
+                    painter = painterResource(id = R.drawable.search_icon),
                     contentDescription = "Search",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
                 )
+            }
 
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 54.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(45.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors =
+                            listOf(Color.Black, Color.Blue)
+                        ),
+                        shape = RoundedCornerShape(30.dp),
+                    ),
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                onClick = { navController.navigate("folders") }) {
                 Text(
-                    text = "Search",
+                    text = "Folders",
+                    textAlign = TextAlign.End,
                     color = Color.White,
                     fontSize = 23.sp
                 )
+                Spacer(modifier = Modifier.size(10.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.folder_icon),
+                    contentDescription = "Folders",
+                    //tint = Color.White,
+                    modifier = Modifier.size(45.dp)
+                )
             }
-
         }
 
         Row(
@@ -111,61 +154,26 @@ internal fun MainScreen(
                     ),
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                onClick = { navController.navigate("folders") }) {
-
-                Icon(
-                    imageVector = Icons.Rounded.Search,
-                    contentDescription = "Folders",
-                    tint = Color.White,
-                    modifier = Modifier.size(45.dp)
-                )
+                onClick = { navController.navigate("stats") }) {
 
                 Text(
-                    text = "Folders",
+                    text = "Stats  ",
+                    textAlign = TextAlign.End,
                     color = Color.White,
                     fontSize = 23.sp
                 )
-            }
-
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 54.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(
-                modifier = Modifier
-                    .width(165.dp)
-                    .height(45.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors =
-                            listOf(Color.Black, Color.Blue)
-                        ),
-                        shape = RoundedCornerShape(23.dp),
-                    ),
-
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                onClick = { navController.navigate("stats") }) {
-
+                Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    imageVector = Icons.Rounded.CheckCircle,
+                    painter = painterResource(id = R.drawable.stats_icon),
                     contentDescription = "Stats",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
                 )
-
-                Text(
-                    text = "Stats",
-                    color = Color.White,
-                    fontSize = 23.sp
-                )
             }
         }
 
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 54.dp),
@@ -186,17 +194,18 @@ internal fun MainScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 onClick = { navController.navigate("info") }) {
 
+                Text(
+                    text = "Info   ",
+                    textAlign = TextAlign.End,
+                    color = Color.White,
+                    fontSize = 23.sp
+                )
+                Spacer(modifier = Modifier.size(10.dp))
                 Icon(
                     imageVector = Icons.Rounded.Info,
                     contentDescription = "Info",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
-                )
-
-                Text(
-                    text = "Info",
-                    color = Color.White,
-                    fontSize = 23.sp
                 )
             }
         }
