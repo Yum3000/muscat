@@ -222,7 +222,7 @@ fun FoldersList(test: List<Folder>, onDelete: (id: Int) -> Unit, navController: 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
         test.forEach { folder ->
-            if (folder.type == displayedType) {
+            if (displayedType == null || folder.type == displayedType) {
                 key(folder.id) {
                     Card(
                         modifier = Modifier
