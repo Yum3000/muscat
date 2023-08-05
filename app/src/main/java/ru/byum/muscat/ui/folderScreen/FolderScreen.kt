@@ -1,7 +1,7 @@
 package ru.byum.muscat.ui.folderScreen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -15,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.InternalComposeApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,10 +30,12 @@ fun FolderScreen(
     navController: NavController,
     viewModel: FolderViewModel = hiltViewModel(),
 ) {
+    viewModel.init(folderId)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text(text = "id is: $folderId")},
+                title = { Text(text = "id is: $folderId") },
                 navigationIcon = {
                     IconButton(modifier = Modifier.width(96.dp),
                         onClick = { navController.popBackStack() }) {
@@ -46,8 +50,9 @@ fun FolderScreen(
             )
         },
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-
+        val items by viewModel.items.collectAsState()
+        Column(modifier = Modifier.padding(padding).fillMaxWidth()) {
+            items.forEach({ item -> Text(text = item) })
         }
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fd0b7ff5991695782a64f332fb9bf1c1",
+    "identityHash": "50b32909327549c38999e46d48d9b6f5",
     "entities": [
       {
         "tableName": "Rating",
@@ -61,12 +61,66 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "FoldersItems",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `folder` INTEGER NOT NULL, `item` TEXT NOT NULL, FOREIGN KEY(`folder`) REFERENCES `Folder`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folder",
+            "columnName": "folder",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "item",
+            "columnName": "item",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_FoldersItems_folder",
+            "unique": false,
+            "columnNames": [
+              "folder"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_FoldersItems_folder` ON `${TABLE_NAME}` (`folder`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Folder",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "folder"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd0b7ff5991695782a64f332fb9bf1c1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '50b32909327549c38999e46d48d9b6f5')"
     ]
   }
 }
