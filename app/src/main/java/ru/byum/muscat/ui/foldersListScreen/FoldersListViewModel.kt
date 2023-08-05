@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.foldersScreen
+package ru.byum.muscat.ui.foldersListScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,11 +14,9 @@ import ru.byum.muscat.data.FolderType
 import ru.byum.muscat.data.MusicRepository
 import javax.inject.Inject
 
-
-
 @HiltViewModel
-class FolderViewModel @Inject constructor(
-    private val musicRepository: MusicRepository,
+class FoldersListViewModel @Inject constructor(
+    private val musicRepository: MusicRepository
 ) : ViewModel() {
     var folders = musicRepository.folders.stateIn(
         viewModelScope,
@@ -32,10 +30,8 @@ class FolderViewModel @Inject constructor(
     private var _createModalBottom = MutableStateFlow(false)
     var createModalBottom = _createModalBottom.asStateFlow()
 
-    private val _displayedFoldersType = MutableStateFlow<FolderType?>(FolderType.RELEASES)
+    private val _displayedFoldersType = MutableStateFlow<FolderType?>(null)
     var displayedFoldersType = _displayedFoldersType.asStateFlow()
-
-
 
     fun deleteFolder(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -51,15 +47,14 @@ class FolderViewModel @Inject constructor(
         _createFolderType.update { FolderType.RELEASES }
     }
 
-    fun toggleCreateModalBottom () {
+    fun toggleCreateModalBottom() {
         val state = createModalBottom.value
-        _createModalBottom.update{!state}
+        _createModalBottom.update { !state }
     }
 
     fun changeDisplayedType(folderType: FolderType?) {
         _displayedFoldersType.update { folderType }
     }
-
 
     fun createFolder(title: String, type: FolderType) {
         viewModelScope.launch(Dispatchers.IO) {

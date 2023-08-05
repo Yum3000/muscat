@@ -1,6 +1,8 @@
-package ru.byum.muscat.ui.foldersScreen
+package ru.byum.muscat.ui.folderScreen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -19,49 +21,35 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FolderScreen(
+    folderId: Int,
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: FolderViewModel = hiltViewModel(),
 ) {
-//    val folders by viewModel.folders.collectAsStateWithLifecycle()
-//    val typeFolder by viewModel.typeFolder.collectAsState()
-//    var showMenu by remember { mutableStateOf(false) }
-
-
     Scaffold(
-
         topBar = {
-            TopAppBar(title = {}, navigationIcon = {
-                IconButton(modifier = Modifier.width(96.dp),
-                    onClick = { navController.popBackStack() }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        modifier = Modifier.size(128.dp),
-                        contentDescription = "Back"
-                    )
-                }
-            },
-                actions = {
-                })
+            TopAppBar(
+                title = {Text(text = "id is: $folderId")},
+                navigationIcon = {
+                    IconButton(modifier = Modifier.width(96.dp),
+                        onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            modifier = Modifier.size(128.dp),
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = { }
+            )
         },
-
     ) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
 
-        //Text()
-
-
+        }
     }
-
-
-
-
-
-
-
-
 }
 
 

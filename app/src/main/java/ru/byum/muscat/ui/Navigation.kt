@@ -15,8 +15,8 @@ import ru.byum.muscat.ui.main.MainScreen
 import ru.byum.muscat.ui.musicScreen.SearchScreen
 import ru.byum.muscat.ui.statsScreen.StatsScreen
 import ru.byum.muscat.ui.artistScreen.ArtistScreen
-import ru.byum.muscat.ui.foldersScreen.FolderScreen
-import ru.byum.muscat.ui.foldersScreen.FoldersListScreen
+import ru.byum.muscat.ui.folderScreen.FolderScreen
+import ru.byum.muscat.ui.foldersListScreen.FoldersListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -24,19 +24,41 @@ fun MainNavigation(navController: NavHostController) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "main") {
-        composable("main") { MainScreen(modifier = Modifier.padding(16.dp), navController = navController) }
-        composable("search") { SearchScreen(modifier = Modifier.padding(16.dp), navController = navController) }
-        composable("folders") { FoldersListScreen(modifier = Modifier.padding(16.dp), navController) }
+        composable("main") {
+            MainScreen(
+                modifier = Modifier.padding(16.dp),
+                navController = navController
+            )
+        }
+        composable("search") {
+            SearchScreen(
+                modifier = Modifier.padding(16.dp),
+                navController = navController
+            )
+        }
+        composable("folders") {
+            FoldersListScreen(
+                modifier = Modifier.padding(16.dp),
+                navController
+            )
+        }
         composable("info") { InfoScreen(modifier = Modifier.padding(16.dp), navController) }
         composable("stats") { StatsScreen(modifier = Modifier.padding(16.dp), navController) }
-        composable("artistScreen/{artist_id}") {backStackEntry ->
+        composable("artistScreen/{artist_id}") { backStackEntry ->
             ArtistScreen(
                 backStackEntry.arguments?.getString("artist_id")!!,
                 navController,
                 modifier = Modifier.padding(16.dp),
             )
         }
-        composable("FolderScreen") { FolderScreen(modifier = Modifier.padding(16.dp), navController) }
+        composable("folder/{folder_id}") {backStackEntry ->
+            val folderId = backStackEntry.arguments?.getString("folder_id")!!
+            FolderScreen(
+                folderId = folderId.toInt(),
+                modifier = Modifier.padding(16.dp),
+                navController
+            )
+        }
     }
 
 }
