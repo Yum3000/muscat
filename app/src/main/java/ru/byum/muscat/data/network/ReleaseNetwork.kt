@@ -5,9 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+data class ReleaseArtist(
+    @JsonProperty("name") val name: String,
+)
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ReleaseNetwork(
     @JsonProperty("id") val id: Int,
-    @JsonProperty ("title") val title: String,
-    @JsonProperty ("year") val year: String,
+    @JsonProperty("title") val title: String,
+    @JsonProperty("year") val year: String,
+    @JsonProperty("artists") val artists: List<ReleaseArtist>
 )

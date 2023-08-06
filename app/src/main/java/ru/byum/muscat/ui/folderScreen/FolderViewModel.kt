@@ -21,10 +21,6 @@ class FolderViewModel @Inject constructor(
     private var _releases = MutableStateFlow(listOf<Release>())
     var releases = _releases.asStateFlow()
 
-    private var _items = MutableStateFlow(listOf<String>())
-    var items = _items.asStateFlow()
-
-
     private var currentID = 0
 
     fun init(id: Int) {
@@ -33,10 +29,12 @@ class FolderViewModel @Inject constructor(
         currentID = id
 
         viewModelScope.launch(Dispatchers.IO) {
-            musicRepository.addItemToFolder(id, "folder $id item")
-
-            _items.update {
-                musicRepository.getFolderItems(id)
+            musicRepository.addItemToFolder(id, "691856")
+            musicRepository.addItemToFolder(id, "372778")
+            musicRepository.addItemToFolder(id, "1097885")
+            musicRepository.addItemToFolder(id, "649306")
+            _releases.update {
+                musicRepository.getFolderReleases(id)
             }
         }
     }
