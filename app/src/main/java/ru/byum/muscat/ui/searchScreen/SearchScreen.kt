@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.musicScreen
+package ru.byum.muscat.ui.searchScreen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,13 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +48,6 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.data.ReleaseSearchResults
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
@@ -55,6 +55,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistsSearchResults
+import ru.byum.muscat.ui.RatingBar
+import ru.byum.muscat.ui.ListFoldersMenu
+import ru.byum.muscat.ui.Loader
 
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
@@ -69,6 +72,7 @@ fun SearchScreen(
     var active by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     val searchType by viewModel.searchType.collectAsState()
+
 
     Scaffold(
         topBar = {
@@ -153,6 +157,13 @@ fun SearchScreen(
             )
         },
     ) { padding ->
+
+        val loading by viewModel.loading.collectAsState()
+
+        if (loading) {
+            Loader()
+        }
+
         Box(modifier = Modifier.padding(padding)) {
             if (searchType == SearchType.ARTIST) {
                 val searchList by viewModel.artistsSearchResult.collectAsState()
@@ -165,6 +176,7 @@ fun SearchScreen(
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun ReleasesList(
     viewModel: SearchViewModel = hiltViewModel(),
@@ -201,12 +213,14 @@ fun ReleasesList(
                     )
                 }
 
+                Spacer(modifier = Modifier.width(20.dp))
+
                 Column(
                     modifier = Modifier.background(Color.Transparent)
                 ) {
                     Text(
-                        text = "id:${it?.id}, \n" + "title:${it?.title},\n" + "year:${it?.year}",
-                        color = Color.Magenta, fontSize = 30.sp,
+                        text = "${it?.title},\n" + "${it?.year}",
+                        color = Color(0, 12, 120), fontSize = 30.sp,
                         fontFamily = FontFamily.SansSerif
                     )
 
@@ -215,12 +229,26 @@ fun ReleasesList(
                         rating = currentRating,
                         onRatingChanged = { newRating -> currentRating = newRating },
                     )
+
+                    var isClicked by remember {mutableStateOf(false)}
+
+                    IconButton(onClick = { isClicked = true }) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
+
+                    if (isClicked) {
+                        ListFoldersMenu(it.id)
+                    }
                 }
             }
         }
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun ArtistsList(
     viewModel: SearchViewModel = hiltViewModel(),
@@ -228,6 +256,10 @@ fun ArtistsList(
     navController: NavHostController
 ) {
     val state = rememberScrollState()
+
+    var isClicked by remember {mutableStateOf(false)}
+    var currentRating by remember { mutableStateOf(1) }
+
 
     if (results == null) {
         return
@@ -257,21 +289,34 @@ fun ArtistsList(
                         contentDescription = ""
                     )
                 }
+                
+                Spacer(modifier = Modifier.width(20.dp))
 
                 Column {
                     Text(
-                        text = "id:${it?.id}, \n" + "title:${it?.title},\n",
-                        color = Color.Magenta, fontSize = 30.sp,
+                        text = "${it?.title},\n",
+                        color = Color(0, 12, 120), fontSize = 30.sp,
                         fontFamily = FontFamily.SansSerif
                     )
 
-                    IconButton(
-                        onClick = { navController.navigate("artistScreen/${it?.id}") }
-                    ) {
-                        Icon(Icons.Default.List, contentDescription = "artist page")
+                    Row {
+                        IconButton(
+                            onClick = { navController.navigate("artistScreen/${it?.id}") }
+                        ) {
+                            Icon(Icons.Default.List, contentDescription = "artist page")
+                        }
+
+                        IconButton(onClick = { isClicked = true }) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
                     }
 
-                    var currentRating by remember { mutableStateOf(1) }
+                    if (isClicked) {
+                        ListFoldersMenu(it.id)
+                    }
 
                     RatingBar(
                         rating = currentRating,
@@ -279,28 +324,6 @@ fun ArtistsList(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun RatingBar(
-    modifier: Modifier = Modifier,
-    rating: Int = 0,
-    maxRating: Int = 10,
-    starsColor: Color = Color.Magenta,
-    onRatingChanged: (Int) -> Unit
-) {
-    Row {
-        for (i in 1..maxRating) {
-            Icon(
-                imageVector = if (i <= rating) Icons.Filled.Star else Icons.Outlined.Star,
-                tint = if (i <= rating) starsColor else Color.Unspecified,
-                contentDescription = "rating ${i}",
-                modifier = Modifier
-                    .clickable { onRatingChanged(i) }
-                    .padding(2.dp)
-            )
         }
     }
 }

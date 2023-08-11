@@ -7,15 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ru.byum.muscat.ui.infoScreen.InfoScreen
 import ru.byum.muscat.ui.main.MainScreen
-import ru.byum.muscat.ui.musicScreen.SearchScreen
+import ru.byum.muscat.ui.searchScreen.SearchScreen
 import ru.byum.muscat.ui.statsScreen.StatsScreen
 import ru.byum.muscat.ui.artistScreen.ArtistScreen
-import ru.byum.muscat.ui.folderScreen.FolderScreen
+import ru.byum.muscat.ui.folderScreen.FolderArtistsScreen
+import ru.byum.muscat.ui.folderScreen.FolderReleasesScreen
 import ru.byum.muscat.ui.foldersListScreen.FoldersListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -51,14 +54,27 @@ fun MainNavigation(navController: NavHostController) {
                 modifier = Modifier.padding(16.dp),
             )
         }
-        composable("folder/{folder_id}") {backStackEntry ->
+        composable("folder/{folder_id}?folderType={FolderType}",
+            arguments = listOf(
+                navArgument("FolderType") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )) {backStackEntry ->
             val folderId = backStackEntry.arguments?.getString("folder_id")!!
-            FolderScreen(
-                folderId = folderId.toInt(),
-                modifier = Modifier.padding(16.dp),
-                navController
-            )
+            val folderType = backStackEntry.arguments?.getString("FolderType") ?: ""
+
+            if(folderType == "RELEASES" ) {
+                FolderReleasesScreen(
+                    folderId = folderId.toInt(),
+                    modifier = Modifier.padding(16.dp),
+                    navController
+                )
+            } else {
+                FolderArtistsScreen(folderId = folderId.toInt(),
+                    modifier = Modifier.padding(16.dp),
+                    navController)
+            }
         }
     }
-
 }

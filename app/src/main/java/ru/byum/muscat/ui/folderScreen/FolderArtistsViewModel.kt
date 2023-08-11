@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.artistScreen
+package ru.byum.muscat.ui.folderScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,43 +8,37 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.byum.muscat.data.ArtistReleases
+import ru.byum.muscat.data.Artist
 import ru.byum.muscat.data.MusicRepository
+import ru.byum.muscat.data.Release
 import javax.inject.Inject
 
 @HiltViewModel
-class ArtistScreenViewModel @Inject constructor(
+class FolderArtistsViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
 ) : ViewModel() {
-    private var _listArtistReleases = MutableStateFlow<ArtistReleases?>(null)
-    var artistsReleases = _listArtistReleases.asStateFlow()
+    private var _artists = MutableStateFlow(listOf<Artist>())
+    var artists = _artists.asStateFlow()
 
-    private var _artistID = MutableStateFlow("")
-    var artistID = _artistID.asStateFlow()
-
-
+    private var currentID = 0
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
-    fun init(id: String) {
-        if (artistID.value != id) {
-            getReleases(id.toInt())
+    fun init(id: Int) {
+        if (currentID == id) return
 
-            _artistID.update { id }
-        }
-    }
+        currentID = id
 
-    private fun getReleases(id: Int?) {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
 
-            val response = musicRepository.getReleases(id)
-            _listArtistReleases.update { response }
+            _artists.update {
+                musicRepository.getFolderArtists(id)
+            }
 
             _loading.update { false }
+
         }
     }
-
-
 }

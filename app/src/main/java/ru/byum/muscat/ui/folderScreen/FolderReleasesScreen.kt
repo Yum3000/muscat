@@ -1,11 +1,8 @@
 package ru.byum.muscat.ui.folderScreen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,14 +28,18 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import ru.byum.muscat.ui.Loader
+import ru.byum.muscat.ui.RatingBar
+import ru.byum.muscat.ui.RatingBarViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
 @Composable
-fun FolderScreen(
+fun FolderReleasesScreen(
     folderId: Int,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: FolderViewModel = hiltViewModel(),
+    viewModel: FolderReleasesViewModel = hiltViewModel(),
+    //ratingViewModel: RatingBarViewModel = hiltViewModel()
 ) {
     viewModel.init(folderId)
 
@@ -66,6 +67,12 @@ fun FolderScreen(
                 .padding(padding)
                 .fillMaxWidth()
         ) {
+            val loading by viewModel.loading.collectAsState()
+
+            if (loading) {
+                Loader()
+            }
+
             Column {
                 releases.forEach { release ->
                     key(release.id) {
@@ -74,6 +81,16 @@ fun FolderScreen(
                                 .padding(5.dp)
                                 .fillMaxWidth()
                         ) {
+
+//                            val rating by ratingViewModel.rating.collectAsState()
+//
+//                            RatingBar(
+//                                rating = rating,
+//                                onRatingChanged = { newRating ->
+//                                    ratingViewModel.setRating(release.id.toString(), newRating)
+//                                },
+//                            )
+
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(modifier = Modifier.padding(start = 10.dp)) {
                                 }
@@ -84,12 +101,6 @@ fun FolderScreen(
                                     modifier = Modifier
                                         .padding(10.dp)
                                 )
-
-//                            Spacer(
-//                                Modifier
-//                                    .weight(1f)
-//                                    .fillMaxHeight()
-//                            )
                             }
                         }
                     }
@@ -98,5 +109,3 @@ fun FolderScreen(
         }
     }
 }
-
-

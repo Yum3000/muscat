@@ -37,6 +37,11 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
        val response = api.getRelease(releaseID, token)
         return response.body()
     }
+
+    override suspend fun getArtist(artistID: Int): ArtistNetwork? {
+        val response = api.getArtist(artistID, token)
+        return response.body()
+    }
 }
 
 
