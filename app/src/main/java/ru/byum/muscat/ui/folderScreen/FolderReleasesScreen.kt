@@ -1,5 +1,6 @@
 package ru.byum.muscat.ui.folderScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -97,6 +98,8 @@ fun FolderReleasesScreen(
                                     fontWeight = FontWeight.W700,
                                     modifier = Modifier
                                         .padding(10.dp)
+                                        .clickable { navController.navigate("releaseScreen/${release.id}") }
+
                                 )
                             }
                         }

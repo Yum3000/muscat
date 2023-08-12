@@ -8,9 +8,12 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun RatingBar(
@@ -18,8 +21,13 @@ fun RatingBar(
     rating: Int = 0,
     maxRating: Int = 10,
     starsColor: Color = Color.Magenta,
-    onRatingChanged: (Int) -> Unit
+    onRatingChanged: (Int) -> Unit,
+    //itemID: String,
+    //viewModel: RatingBarViewModel = hiltViewModel()
 ) {
+//    val currentRating by viewModel.rating.collectAsState()
+//    currentRating.get
+
     Row {
         for (i in 1..maxRating) {
             Icon(

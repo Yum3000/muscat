@@ -20,6 +20,7 @@ import ru.byum.muscat.ui.artistScreen.ArtistScreen
 import ru.byum.muscat.ui.folderScreen.FolderArtistsScreen
 import ru.byum.muscat.ui.folderScreen.FolderReleasesScreen
 import ru.byum.muscat.ui.foldersListScreen.FoldersListScreen
+import ru.byum.muscat.ui.releaseScreen.ReleaseScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -75,6 +76,13 @@ fun MainNavigation(navController: NavHostController) {
                     modifier = Modifier.padding(16.dp),
                     navController)
             }
+        }
+        composable("releaseScreen/{release_id}") { backStackEntry ->
+            ReleaseScreen(
+                backStackEntry.arguments?.getString("release_id")!!,
+                navController,
+                modifier = Modifier.padding(16.dp),
+            )
         }
     }
 }

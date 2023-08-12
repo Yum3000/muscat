@@ -11,6 +11,7 @@ interface MusicRepository {
     suspend fun searchReleases(query: String): ReleaseSearchResults?
     suspend fun searchArtists(query: String): ArtistsSearchResults?
     suspend fun getReleases(id: Int?): ArtistReleases?
+    suspend fun getRelease(id: Int) : Release?
     suspend fun setRating(id: String, rating: Int)
     suspend fun getRating(id: String): Int
     val folders: Flow<List<Folder>>
@@ -37,6 +38,11 @@ class DefaultMusicRepository @Inject constructor(
 
     override suspend fun getReleases(id: Int?): ArtistReleases? {
         return discogs.getArtistReleases(id)
+    }
+
+    override suspend fun getRelease(id: Int): Release? {
+       val release = discogs.getRelease(id)
+        return release?.toRelease()
     }
 
     override suspend fun setRating(id: String, rating: Int) {
