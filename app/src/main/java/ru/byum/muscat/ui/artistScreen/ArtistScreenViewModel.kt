@@ -25,6 +25,9 @@ class ArtistScreenViewModel @Inject constructor(
     private var _rating = MutableStateFlow(0)
     var rating = _rating.asStateFlow()
 
+    private val _loading = MutableStateFlow(false)
+    val loading = _loading.asStateFlow()
+
     fun init(id: String) {
         if (artistID.value != id) {
             getRating(id)
@@ -36,8 +39,12 @@ class ArtistScreenViewModel @Inject constructor(
 
     private fun getReleases(id: Int?) {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.update { true }
+
             val response = musicRepository.getReleases(id)
             _listArtistReleases.update { response }
+
+            _loading.update { false }
         }
     }
 

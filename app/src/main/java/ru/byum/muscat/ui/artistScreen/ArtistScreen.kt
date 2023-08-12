@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,7 +44,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.R
 import ru.byum.muscat.data.ArtistReleases
-import ru.byum.muscat.ui.musicScreen.RatingBar
+import ru.byum.muscat.ui.ListFoldersMenu
+import ru.byum.muscat.ui.Loader
+import ru.byum.muscat.ui.RatingBar.RatingBar
 
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
@@ -52,7 +56,7 @@ fun ArtistScreen(
     artistID: String,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: ArtistScreenViewModel = hiltViewModel()
+    viewModel: ArtistScreenViewModel = hiltViewModel(),
 ) {
     viewModel.init(artistID)
 
@@ -78,12 +82,11 @@ fun ArtistScreen(
         Column(modifier = Modifier.padding(padding)) {
             val rating by viewModel.rating.collectAsState()
 
-            RatingBar(
-                rating = rating,
-                onRatingChanged = { newRating ->
-                    viewModel.setRating(artistID, newRating)
-                },
-            )
+            val loading by viewModel.loading.collectAsState()
+
+            if (loading) {
+                Loader()
+            }
 
             val results by viewModel.artistsReleases.collectAsState()
             if (results != null) {
@@ -94,8 +97,11 @@ fun ArtistScreen(
 }
 
 
+@ExperimentalMaterial3Api
 @Composable
-fun ArtistReleasesList(results: ArtistReleases?) {
+fun ArtistReleasesList(
+    results: ArtistReleases?,
+) {
     val state = rememberScrollState()
 
     if (results == null) {
@@ -127,13 +133,15 @@ fun ArtistReleasesList(results: ArtistReleases?) {
                     )
                 }
 
+                Spacer(modifier = Modifier.width(20.dp))
+
                 Column(
                     modifier = Modifier.background(Color.Transparent)
                 ) {
                     Text(
-                        text = "artist:${it?.artist}\n" + "id:${it?.id}, \n" +
-                                "title:${it?.title},\n" + "year:${it?.year}",
-                        color = Color.Magenta, fontSize = 30.sp,
+                        text = "${it?.artist}:\n" + "${it?.id}\n" +
+                                "${it?.title},\n" + "${it?.year}",
+                        color = Color(0, 12, 120), fontSize = 30.sp,
                         fontFamily = FontFamily.SansSerif
                     )
 
@@ -142,8 +150,22 @@ fun ArtistReleasesList(results: ArtistReleases?) {
                         rating = currentRating,
                         onRatingChanged = { newRating -> currentRating = newRating },
                     )
+
+                    var isClicked by remember {mutableStateOf(false)}
+
+                    IconButton(onClick = { isClicked = true }) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
+
+                    if (isClicked) {
+                        ListFoldersMenu(it.id)
+                    }
                 }
             }
         }
     }
 }
+

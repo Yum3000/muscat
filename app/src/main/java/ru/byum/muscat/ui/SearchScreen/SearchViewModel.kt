@@ -1,4 +1,4 @@
-package ru.byum.muscat.ui.musicScreen
+package ru.byum.muscat.ui.SearchScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +30,9 @@ class SearchViewModel @Inject constructor(
     private var _listCurrentArtists = MutableStateFlow<ArtistsSearchResults?>(null)
     var artistsSearchResult = _listCurrentArtists.asStateFlow()
 
+    private val _loading = MutableStateFlow(false)
+    val loading = _loading.asStateFlow()
+
     fun setSearchArtist() {
         _searchType.update { SearchType.ARTIST }
     }
@@ -40,15 +43,23 @@ class SearchViewModel @Inject constructor(
 
     fun searchReleases(searchString: String) {
         viewModelScope.launch(Dispatchers.IO){
+            _loading.update { true }
+
             val response = musicRepository.searchReleases(searchString)
             _listCurrentResults.update {response}
+
+            _loading.update { false }
         }
     }
 
     fun searchArtists(searchString: String) {
         viewModelScope.launch(Dispatchers.IO){
+            _loading.update { true }
+
             val response = musicRepository.searchArtists(searchString)
             _listCurrentArtists.update { response }
+
+            _loading.update { false }
         }
     }
 }

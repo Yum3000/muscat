@@ -262,7 +262,7 @@ fun FoldersList(
                                 modifier = Modifier
                                     .padding(10.dp)
                                     .clickable {
-                                        navController.navigate("folder/${folder.id}")
+                                        navController.navigate("folder/${folder.id}?folderType=${folder.type}")
                                     }
                             )
 

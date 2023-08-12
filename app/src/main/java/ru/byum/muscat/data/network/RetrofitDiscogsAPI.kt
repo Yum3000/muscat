@@ -9,11 +9,17 @@ import ru.byum.muscat.data.ArtistsSearchResults
 import ru.byum.muscat.data.ReleaseSearchResults
 
 interface RetrofitDiscogsAPI {
-    @GET("/releases/{release_id}")
+    @GET("/masters/{master_id}")
     suspend fun getRelease(
-        @Path("release_id") releaseID: Int,
+        @Path("master_id") releaseID: Int,
         @Query("token") token: String
     ): Response<ReleaseNetwork>
+
+    @GET("/artists/{artist_id}")
+    suspend fun getArtist(
+        @Path("artist_id") artistID: Int,
+        @Query("token") token: String
+    ): Response<ArtistNetwork>
 
     @GET("/artists/{artist_id}/releases")
     suspend fun getArtistReleases(@Path("artist_id") artistID: Int?): Response<ArtistReleases>

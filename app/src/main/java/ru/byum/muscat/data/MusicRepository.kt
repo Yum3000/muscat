@@ -1,5 +1,6 @@
 package ru.byum.muscat.data
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import ru.byum.muscat.data.local.database.MusicDao
 import ru.byum.muscat.data.local.database.Rating
@@ -17,6 +18,8 @@ interface MusicRepository {
     suspend fun deleteFolder(id: Int)
     suspend fun getFolderItems(id: Int): List<String>
     suspend fun getFolderReleases(id: Int): List<Release>
+
+    suspend fun getFolderArtists(id: Int) : List<Artist>
     suspend fun addItemToFolder(folder: Int, item: String)
 }
 
@@ -59,12 +62,20 @@ class DefaultMusicRepository @Inject constructor(
     }
 
     override suspend fun getFolderReleases(id: Int): List<Release> {
+
         return musicDao.getFolderItems(id)
             .mapNotNull { discogs.getRelease(it.item.toInt()) }
             .map { it.toRelease() }
     }
 
+    override suspend fun getFolderArtists(id: Int): List<Artist> {
+        return musicDao.getFolderItems(id)
+            .mapNotNull { discogs.getArtist(it.item.toInt()) }
+            .map { it.toArtist() }
+    }
+
     override suspend fun addItemToFolder(folder: Int, item: String) {
         musicDao.addItemToFolder(FoldersItems(folder, item))
+        Log.d("MusicRepository", "ID: ${item}")
     }
 }
