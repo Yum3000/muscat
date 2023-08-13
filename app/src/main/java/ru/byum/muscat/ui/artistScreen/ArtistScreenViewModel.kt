@@ -22,15 +22,15 @@ class ArtistScreenViewModel @Inject constructor(
     private var _artistID = MutableStateFlow("")
     var artistID = _artistID.asStateFlow()
 
-    private var _rating = MutableStateFlow(0)
-    var rating = _rating.asStateFlow()
+    private var _releasesRatings = MutableStateFlow(mapOf<Int, Int>())
+    var releasesRatings = _releasesRatings.asStateFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
     fun init(id: String) {
         if (artistID.value != id) {
-            getRating(id)
+
             getReleases(id.toInt())
 
             _artistID.update { id }
@@ -41,24 +41,29 @@ class ArtistScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
 
-            val response = musicRepository.getReleases(id)
-            _listArtistReleases.update { response }
+            val releases = musicRepository.getReleases(id)
+            _listArtistReleases.update { releases }
+
+            val releasesIds = releases?.releases?.map { it.id }
+
+            if (!releasesIds.isNullOrEmpty()) {
+                val ratings = musicRepository.getRatings(releasesIds)
+                val old = _releasesRatings.value.toMutableMap()
+                ratings.forEach { old[it.itemId] = it.rating  }
+                _releasesRatings.update { old }
+            }
 
             _loading.update { false }
         }
     }
 
-    private fun getRating(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val rating = musicRepository.getRating(id)
-            _rating.update { rating }
-        }
-    }
+    fun setRating(itemID: Int, rating: Int) {
+        val ratings = _releasesRatings.value.toMutableMap()
+        ratings[itemID] = rating
+        _releasesRatings.update { ratings }
 
-    fun setRating(id: String, rating: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            musicRepository.setRating(id, rating)
-            _rating.update { rating }
+            musicRepository.setRating(itemID, rating)
         }
     }
 }

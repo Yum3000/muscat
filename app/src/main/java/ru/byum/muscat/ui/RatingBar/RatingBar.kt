@@ -10,32 +10,36 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
+const val maxRating = 10
+
 @Composable
 fun RatingBar(
-    modifier: Modifier = Modifier,
-    rating: Int = 0,
-    maxRating: Int = 10,
+    id: Int,
+    rating: Int,
+    onRatingChang: (id: Int, newRating: Int) -> Unit,
     starsColor: Color = Color.Magenta,
-    onRatingChanged: (Int) -> Unit,
-    //itemID: String,
-    //viewModel: RatingBarViewModel = hiltViewModel()
 ) {
-//    val currentRating by viewModel.rating.collectAsState()
-//    currentRating.get
+    var currentRating by remember { mutableStateOf(rating) }
 
     Row {
         for (i in 1..maxRating) {
             Icon(
-                imageVector = if (i <= rating) Icons.Filled.Star else Icons.Outlined.Star,
-                tint = if (i <= rating) starsColor else Color.Unspecified,
+                imageVector = if (i <= currentRating) Icons.Filled.Star else Icons.Outlined.Star,
+                tint = if (i <= currentRating) starsColor else Color.Unspecified,
                 contentDescription = "rating ${i}",
                 modifier = Modifier
-                    .clickable { onRatingChanged(i) }
+                    .clickable {
+                        onRatingChang(id, i)
+                        currentRating = i
+                    }
                     .padding(2.dp)
             )
         }

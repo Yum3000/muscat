@@ -12,7 +12,7 @@ import ru.byum.muscat.data.FoldersItems
 @Dao
 interface MusicDao {
     @Query("SELECT * FROM Rating WHERE itemId=:id")
-    fun getRating(id: String): Rating?
+    fun getRating(id: Int): Rating?
 
     @Upsert(entity = Rating::class)
     fun setRating(rating: Rating)

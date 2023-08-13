@@ -224,11 +224,7 @@ fun ReleasesList(
                         fontFamily = FontFamily.SansSerif
                     )
 
-                    var currentRating by remember { mutableStateOf(1) }
-                    RatingBar(
-                        rating = currentRating,
-                        onRatingChanged = { newRating -> currentRating = newRating },
-                    )
+                    //RatingBar(it.id!!)
 
                     var isClicked by remember {mutableStateOf(false)}
 
@@ -258,8 +254,6 @@ fun ArtistsList(
     val state = rememberScrollState()
 
     var isClicked by remember {mutableStateOf(false)}
-    var currentRating by remember { mutableStateOf(1) }
-
 
     if (results == null) {
         return
@@ -318,10 +312,7 @@ fun ArtistsList(
                         ListFoldersMenu(it.id)
                     }
 
-                    RatingBar(
-                        rating = currentRating,
-                        onRatingChanged = { newRating -> currentRating = newRating },
-                    )
+                    //RatingBar(it.id!!)
                 }
             }
         }

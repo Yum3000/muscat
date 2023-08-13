@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -55,7 +57,6 @@ import ru.byum.muscat.ui.RatingBar.RatingBar
 fun ArtistScreen(
     artistID: String,
     navController: NavHostController,
-    modifier: Modifier = Modifier,
     viewModel: ArtistScreenViewModel = hiltViewModel(),
 ) {
     viewModel.init(artistID)
@@ -80,7 +81,6 @@ fun ArtistScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            val rating by viewModel.rating.collectAsState()
 
             val loading by viewModel.loading.collectAsState()
 
@@ -89,8 +89,15 @@ fun ArtistScreen(
             }
 
             val results by viewModel.artistsReleases.collectAsState()
+            val ratings by viewModel.releasesRatings.collectAsState()
             if (results != null) {
-                ArtistReleasesList(results = results)
+                ArtistReleasesList(
+                    results,
+                    ratings,
+                    { id, rating ->
+                        viewModel.setRating(id, rating)
+                    }
+                )
             }
         }
     }
@@ -100,68 +107,72 @@ fun ArtistScreen(
 @ExperimentalMaterial3Api
 @Composable
 fun ArtistReleasesList(
-    results: ArtistReleases?,
+    releases: ArtistReleases?,
+    ratings: Map<Int, Int>,
+    onRatingChange: (id: Int, rating: Int) -> Unit,
 ) {
-    val state = rememberScrollState()
+    val scrollState = rememberScrollState()
 
-    if (results == null) {
+    if (releases == null) {
         return
     }
 
     Column(
-        modifier = Modifier.verticalScroll(state),
+        modifier = Modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
     ) {
-        results.releases?.forEach {
-            Row(modifier = Modifier.padding(10.dp)) {
-                if (it.thumb != "" && it.thumb != null) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).data(it?.thumb)
-                            .crossfade(true).build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+        releases.releases?.forEach {
+            key(it.id) {
+                Row(modifier = Modifier.padding(10.dp)) {
+                    if (it.thumb != "") {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current).data(it.thumb)
+                                .crossfade(true).build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
 
-                        modifier = Modifier
-                            .height(100.dp)
-                            .width(100.dp),
-                        alignment = Alignment.BottomEnd
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.no_image),
-                        contentDescription = ""
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(20.dp))
-
-                Column(
-                    modifier = Modifier.background(Color.Transparent)
-                ) {
-                    Text(
-                        text = "${it?.artist}:\n" + "${it?.id}\n" +
-                                "${it?.title},\n" + "${it?.year}",
-                        color = Color(0, 12, 120), fontSize = 30.sp,
-                        fontFamily = FontFamily.SansSerif
-                    )
-
-                    var currentRating by remember { mutableStateOf(1) }
-                    RatingBar(
-                        rating = currentRating,
-                        onRatingChanged = { newRating -> currentRating = newRating },
-                    )
-
-                    var isClicked by remember {mutableStateOf(false)}
-
-                    IconButton(onClick = { isClicked = true }) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null
+                            modifier = Modifier
+                                .height(100.dp)
+                                .width(100.dp),
+                            alignment = Alignment.BottomEnd
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_image),
+                            contentDescription = ""
                         )
                     }
 
-                    if (isClicked) {
-                        ListFoldersMenu(it.id)
+                    Spacer(modifier = Modifier.width(20.dp))
+
+                    Column(
+                        modifier = Modifier.background(Color.Transparent)
+                    ) {
+                        Text(
+                            text = "${it.artist}:\n" + "${it.id}\n" +
+                                    "${it.title},\n" + "${it.year}",
+                            color = Color(0, 12, 120), fontSize = 30.sp,
+                            fontFamily = FontFamily.SansSerif
+                        )
+
+                        RatingBar(
+                            it.id,
+                            ratings[it.id] ?: 0,
+                            onRatingChange
+                        )
+
+                        var isClicked by remember { mutableStateOf(false) }
+
+                        IconButton(onClick = { isClicked = true }) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
+
+                        if (isClicked) {
+                            ListFoldersMenu(it.id)
+                        }
                     }
                 }
             }

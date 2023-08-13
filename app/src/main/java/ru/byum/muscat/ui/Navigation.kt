@@ -52,7 +52,6 @@ fun MainNavigation(navController: NavHostController) {
             ArtistScreen(
                 backStackEntry.arguments?.getString("artist_id")!!,
                 navController,
-                modifier = Modifier.padding(16.dp),
             )
         }
         composable("folder/{folder_id}?folderType={FolderType}",

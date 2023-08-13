@@ -60,6 +60,7 @@ fun FolderArtistsScreen(
         },
     ) { padding ->
         val artists by viewModel.artists.collectAsState()
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -80,8 +81,6 @@ fun FolderArtistsScreen(
                                 .fillMaxWidth()
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.padding(start = 10.dp)) {
-                                }
                                 Text(
                                     artist.name,
                                     fontSize = 25.sp,
@@ -89,14 +88,15 @@ fun FolderArtistsScreen(
                                     modifier = Modifier
                                         .padding(10.dp)
                                         .clickable {
-                                            navController.navigate("artistScreen/${artist.id}") }
-                                            )
+                                            navController.navigate("artistScreen/${artist.id}")
                                         }
+                                )
                             }
                         }
                     }
                 }
             }
-
         }
+
     }
+}

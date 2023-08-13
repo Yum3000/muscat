@@ -21,14 +21,22 @@ class RatingBarViewModel @Inject constructor(
     private var _rating = MutableStateFlow(0)
     var rating = _rating.asStateFlow()
 
-    fun getRating(id: String) {
+    var currentID: Int = 0
+
+    fun init(id: Int) {
+        if (currentID == id) return
+        currentID = id
+        getRating(id)
+    }
+
+    fun getRating(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val rating = musicRepository.getRating(id)
             _rating.update { rating }
         }
     }
 
-    fun setRating(id: String, rating: Int) {
+    fun setRating(id: Int, rating: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             musicRepository.setRating(id, rating)
             _rating.update { rating }

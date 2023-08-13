@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,9 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,12 +37,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import dagger.hilt.android.lifecycle.HiltViewModel
 import ru.byum.muscat.R
 import ru.byum.muscat.ui.Loader
 import ru.byum.muscat.ui.RatingBar.RatingBar
-import ru.byum.muscat.ui.artistScreen.ArtistReleasesList
-import ru.byum.muscat.ui.artistScreen.ArtistScreenViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
@@ -80,11 +74,13 @@ fun ReleaseScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Row(modifier = Modifier.padding(10.dp)) {
+
                 val release by viewModel.release.collectAsState()
                 if (release != null) {
                     if (release?.image != "") {
@@ -95,9 +91,9 @@ fun ReleaseScreen(
                             contentScale = ContentScale.Crop,
 
                             modifier = Modifier
-                                .height(100.dp)
-                                .width(100.dp),
-                            alignment = Alignment.BottomEnd
+                                .height(250.dp)
+                                .width(250.dp),
+                            alignment = Alignment.TopCenter
                         )
                     } else {
                         Image(
@@ -106,25 +102,19 @@ fun ReleaseScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                    Column(
-                        modifier = Modifier.background(Color.Transparent)
-                    ) {
                         Text(
-                            text = "${release?.title},\n" + "${release?.year}",
+                            text = "${release?.artist}\n\n" +
+                                    "${release?.title},\n" + "${release?.year}",
                             color = Color(0, 12, 120), fontSize = 30.sp,
                             fontFamily = FontFamily.SansSerif
                         )
 
-                        var currentRating by remember { mutableStateOf(1) }
-                        RatingBar(
-                            rating = currentRating,
-                            onRatingChanged = { newRating -> currentRating = newRating },
-                        )
-                    }
+                        //RatingBar(release!!.id)
+
                 }
-            }
+
         }
     }
 }
