@@ -223,8 +223,6 @@ fun ReleasesList(
                         fontFamily = FontFamily.SansSerif
                     )
 
-                    //RatingBar(it.id!!)
-
                     var isClicked by remember {mutableStateOf(false)}
 
                     IconButton(onClick = { isClicked = true }) {
@@ -310,8 +308,6 @@ fun ArtistsList(
                     if (isClicked) {
                         ListFoldersMenu(it.id)
                     }
-
-                    //RatingBar(it.id!!)
                 }
             }
         }

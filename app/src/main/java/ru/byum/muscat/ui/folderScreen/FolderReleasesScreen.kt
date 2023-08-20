@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import ru.byum.muscat.ui.Loader
+import ru.byum.muscat.ui.RatingBar.RatingBar
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
 @Composable
@@ -79,15 +80,11 @@ fun FolderReleasesScreen(
                                 .padding(5.dp)
                                 .fillMaxWidth()
                         ) {
-
-//                            val rating by ratingViewModel.rating.collectAsState()
-//
-//                            RatingBar(
-//                                rating = rating,
-//                                onRatingChanged = { newRating ->
-//                                    ratingViewModel.setRating(release.id.toString(), newRating)
-//                                },
-//                            )
+                            RatingBar(
+                                release.id,
+                                release.rating,
+                                { id, newRating -> viewModel.setReleaseRating(id, newRating) },
+                            )
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(modifier = Modifier.padding(start = 10.dp)) {

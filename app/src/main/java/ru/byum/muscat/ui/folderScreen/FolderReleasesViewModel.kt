@@ -33,17 +33,22 @@ class FolderReleasesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
 
-            //delay(2000)
-            //musicRepository.addItemToFolder(id, "691856")
-//            musicRepository.addItemToFolder(id, "372778")
-//            musicRepository.addItemToFolder(id, "1097885")
-//            musicRepository.addItemToFolder(id, "649306")
-            _releases.update {
-                musicRepository.getFolderReleases(id)
-            }
+            _releases.update { musicRepository.getFolderReleases(id) }
 
             _loading.update { false }
 
+        }
+    }
+
+    fun setReleaseRating(releaseID: Int, rating: Int) {
+        val releases = _releases.value.toMutableList()
+        val release = releases.find { it.id == releaseID }
+        release?.rating = rating
+
+        _releases.update { releases }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.setRating(releaseID, rating)
         }
     }
 }

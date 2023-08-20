@@ -74,10 +74,16 @@ class DefaultMusicRepository @Inject constructor(
     }
 
     override suspend fun getFolderReleases(id: Int): List<Release> {
+        val folderReleases = musicDao.getFolderItems(id)
+        val allRatings = musicDao.getAllRatings()
 
-        return musicDao.getFolderItems(id)
+        return folderReleases
             .mapNotNull { discogs.getRelease(it.item.toInt()) }
-            .map { it.toRelease() }
+            .map {networkRelease ->
+                val release = networkRelease.toRelease()
+                release.rating = allRatings.find { it.itemId == release.id }?.rating ?: 0
+                release
+            }
     }
 
     override suspend fun getFolderArtists(id: Int): List<Artist> {
