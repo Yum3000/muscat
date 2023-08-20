@@ -40,12 +40,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.R
-import ru.byum.muscat.data.ArtistReleases
+import ru.byum.muscat.data.Release
 import ru.byum.muscat.ui.ListFoldersMenu
 import ru.byum.muscat.ui.Loader
 import ru.byum.muscat.ui.RatingBar.RatingBar
@@ -81,24 +80,18 @@ fun ArtistScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-
             val loading by viewModel.loading.collectAsState()
 
             if (loading) {
                 Loader()
             }
 
-            val results by viewModel.artistsReleases.collectAsState()
-            val ratings by viewModel.releasesRatings.collectAsState()
-            if (results != null) {
-                ArtistReleasesList(
-                    results,
-                    ratings,
-                    { id, rating ->
-                        viewModel.setRating(id, rating)
-                    }
-                )
-            }
+            val releases by viewModel.releases.collectAsState()
+
+            ArtistReleasesList(
+                releases,
+                { id, rating -> viewModel.setReleaseRating(id, rating) }
+            )
         }
     }
 }
@@ -107,13 +100,12 @@ fun ArtistScreen(
 @ExperimentalMaterial3Api
 @Composable
 fun ArtistReleasesList(
-    releases: ArtistReleases?,
-    ratings: Map<Int, Int>,
+    releases: List<Release>,
     onRatingChange: (id: Int, rating: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
-    if (releases == null) {
+    if (releases.isEmpty()) {
         return
     }
 
@@ -121,12 +113,12 @@ fun ArtistReleasesList(
         modifier = Modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
     ) {
-        releases.releases?.forEach {
+        releases.forEach {
             key(it.id) {
                 Row(modifier = Modifier.padding(10.dp)) {
-                    if (it.thumb != "") {
+                    if (it.image != "") {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current).data(it.thumb)
+                            model = ImageRequest.Builder(LocalContext.current).data(it.image)
                                 .crossfade(true).build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
@@ -149,17 +141,12 @@ fun ArtistReleasesList(
                         modifier = Modifier.background(Color.Transparent)
                     ) {
                         Text(
-                            text = "${it.artist}:\n" + "${it.id}\n" +
-                                    "${it.title},\n" + "${it.year}",
+                            text = "${it.artist}:\n${it.id}\n${it.title},\n${it.year}",
                             color = Color(0, 12, 120), fontSize = 30.sp,
                             fontFamily = FontFamily.SansSerif
                         )
 
-                        RatingBar(
-                            it.id,
-                            ratings[it.id] ?: 0,
-                            onRatingChange
-                        )
+                        RatingBar(it.id, it.rating, onRatingChange)
 
                         var isClicked by remember { mutableStateOf(false) }
 

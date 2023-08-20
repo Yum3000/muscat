@@ -64,14 +64,8 @@
       },
       {
         "tableName": "FoldersItems",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `folder` INTEGER NOT NULL, `item` TEXT NOT NULL, FOREIGN KEY(`folder`) REFERENCES `Folder`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`folder` INTEGER NOT NULL, `item` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`folder`) REFERENCES `Folder`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "folder",
             "columnName": "folder",
@@ -82,6 +76,12 @@
             "fieldPath": "item",
             "columnName": "item",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],

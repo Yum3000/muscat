@@ -34,7 +34,7 @@ fun RatingBar(
             Icon(
                 imageVector = if (i <= currentRating) Icons.Filled.Star else Icons.Outlined.Star,
                 tint = if (i <= currentRating) starsColor else Color.Unspecified,
-                contentDescription = "rating ${i}",
+                contentDescription = "rating $i",
                 modifier = Modifier
                     .clickable {
                         onRatingChang(id, i)

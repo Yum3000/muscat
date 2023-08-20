@@ -10,10 +10,11 @@ import javax.inject.Inject
 interface MusicRepository {
     suspend fun searchReleases(query: String): ReleaseSearchResults?
     suspend fun searchArtists(query: String): ArtistsSearchResults?
-    suspend fun getReleases(id: Int?): ArtistReleases?
+    suspend fun getArtistReleases(id: Int?): List<Release>
     suspend fun getRelease(id: Int): Release?
     suspend fun setRating(id: Int, rating: Int)
-    suspend fun getRating(id: Int): Int
+
+    //    suspend fun getRating(id: Int): Int
     val folders: Flow<List<Folder>>
     suspend fun createFolder(title: String, type: FolderType)
     suspend fun deleteFolder(id: Int)
@@ -23,7 +24,7 @@ interface MusicRepository {
     suspend fun getFolderArtists(id: Int): List<Artist>
     suspend fun addItemToFolder(folder: Int, item: String)
 
-    suspend fun getRatings(items: List<Int>): List<Rating>
+//    suspend fun getRatings(items: List<Int>): List<Rating>
 }
 
 class DefaultMusicRepository @Inject constructor(
@@ -38,8 +39,16 @@ class DefaultMusicRepository @Inject constructor(
         return discogs.searchArtists(query)
     }
 
-    override suspend fun getReleases(id: Int?): ArtistReleases? {
-        return discogs.getArtistReleases(id)
+    override suspend fun getArtistReleases(id: Int?): List<Release> {
+        val artistReleases = discogs.getArtistReleases(id)
+        val allRatings = musicDao.getAllRatings()
+
+        return artistReleases?.releases
+            ?.map { artistRelease ->
+                val release = artistRelease.toRelease()
+                release.rating = allRatings.find { it.itemId == release.id }?.rating ?: 0
+                release
+            } ?: listOf()
     }
 
     override suspend fun getRelease(id: Int): Release? {
@@ -51,9 +60,9 @@ class DefaultMusicRepository @Inject constructor(
         musicDao.setRating(Rating(id, rating))
     }
 
-    override suspend fun getRating(id: Int): Int {
-        return musicDao.getRating(id)?.rating ?: 0
-    }
+//    override suspend fun getRating(id: Int): Int {
+//        return musicDao.getRating(id)?.rating ?: 0
+//    }
 
     override val folders: Flow<List<Folder>> = musicDao.getAllFolders()
 
@@ -87,13 +96,13 @@ class DefaultMusicRepository @Inject constructor(
         Log.d("MusicRepository", "ID: ${item}")
     }
 
-    override suspend fun getRatings(items: List<Int>): List<Rating> {
-        val ratings = items.mapNotNull { musicDao.getRating(it) }
-
-//        val acc = mutableMapOf<Int, Int>()
-//        for ()
-//        ratings.forEach { rating -> acc[rating.itemId] = rating.rating }
-
-        return ratings
-    }
+//    override suspend fun getRatings(items: List<Int>): List<Rating> {
+//        val ratings = items.mapNotNull { musicDao.getRating(it) }
+//
+////        val acc = mutableMapOf<Int, Int>()
+////        for ()
+////        ratings.forEach { rating -> acc[rating.itemId] = rating.rating }
+//
+//        return ratings
+//    }
 }

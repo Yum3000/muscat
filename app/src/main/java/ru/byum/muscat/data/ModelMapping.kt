@@ -23,3 +23,7 @@ fun ArtistNetwork.toArtist(): Artist {
     return Artist(id, name)
 }
 
+fun ArtistRelease.toRelease(): Release {
+    return Release(id, title, year.toString(), artist, thumb)
+}
+
