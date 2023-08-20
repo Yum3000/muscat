@@ -1,11 +1,12 @@
-package ru.byum.muscat.data
+package ru.byum.muscat.data.network
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class ArtistsSearchResult(
+data class NetworkReleaseSearchResult(
     @JsonProperty("id") val id: Int?,
+    @JsonProperty("year") val year: String?,
     @JsonProperty("title") val title: String?,
     @JsonProperty("thumb") val thumb: String?,
     @JsonProperty("cover_image") val cover_image: String?
@@ -13,6 +14,7 @@ data class ArtistsSearchResult(
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class ArtistsSearchResults(
-    @JsonProperty("results") val results: List<ArtistsSearchResult>?,
+data class NetworkReleaseSearchResults(
+    @JsonProperty("results") val results: List<NetworkReleaseSearchResult>?,
 )
+

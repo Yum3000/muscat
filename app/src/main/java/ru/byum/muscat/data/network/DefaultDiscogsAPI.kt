@@ -1,9 +1,6 @@
 package ru.byum.muscat.data.network
 
-import retrofit2.Response
 import ru.byum.muscat.data.ArtistReleases
-import ru.byum.muscat.data.ArtistsSearchResults
-import ru.byum.muscat.data.ReleaseSearchResults
 import javax.inject.Inject
 
 
@@ -21,13 +18,13 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
         return response.body()
     }
 
-    override suspend fun searchReleases(query: String): ReleaseSearchResults? {
+    override suspend fun searchReleases(query: String): NetworkReleaseSearchResults? {
         val response = api.onSearch(query, "release", token)
 
         return response.body()
     }
 
-    override suspend fun searchArtists(query: String): ArtistsSearchResults? {
+    override suspend fun searchArtists(query: String): NetworkArtistsSearchResults? {
         val response = api.onSearchArtists(query, "artist", token)
 
         return response.body()

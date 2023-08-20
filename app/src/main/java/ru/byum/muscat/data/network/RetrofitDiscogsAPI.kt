@@ -5,8 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.byum.muscat.data.ArtistReleases
-import ru.byum.muscat.data.ArtistsSearchResults
-import ru.byum.muscat.data.ReleaseSearchResults
 
 interface RetrofitDiscogsAPI {
     @GET("/masters/{master_id}")
@@ -29,12 +27,12 @@ interface RetrofitDiscogsAPI {
         @Query("query") query: String,
         @Query("type") type: String,
         @Query("token") token: String
-    ): Response<ReleaseSearchResults>
+    ): Response<NetworkReleaseSearchResults>
 
     @GET("/database/search?")
     suspend fun onSearchArtists(
         @Query("query") query: String,
         @Query("type") type: String,
         @Query("token") token: String
-    ): Response<ArtistsSearchResults>
+    ): Response<NetworkArtistsSearchResults>
 }

@@ -47,15 +47,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import ru.byum.muscat.data.ReleaseSearchResults
+import ru.byum.muscat.data.network.NetworkReleaseSearchResults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import ru.byum.muscat.R
-import ru.byum.muscat.data.ArtistsSearchResults
-import ru.byum.muscat.ui.RatingBar.RatingBar
+import ru.byum.muscat.data.network.NetworkArtistsSearchResults
 import ru.byum.muscat.ui.ListFoldersMenu
 import ru.byum.muscat.ui.Loader
 
@@ -180,7 +179,7 @@ fun SearchScreen(
 @Composable
 fun ReleasesList(
     viewModel: SearchViewModel = hiltViewModel(),
-    results: ReleaseSearchResults?
+    results: NetworkReleaseSearchResults?
 ) {
     val state = rememberScrollState()
 
@@ -248,7 +247,7 @@ fun ReleasesList(
 @Composable
 fun ArtistsList(
     viewModel: SearchViewModel = hiltViewModel(),
-    results: ArtistsSearchResults?,
+    results: NetworkArtistsSearchResults?,
     navController: NavHostController
 ) {
     val state = rememberScrollState()
