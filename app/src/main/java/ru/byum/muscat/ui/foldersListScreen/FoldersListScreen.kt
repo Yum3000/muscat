@@ -239,7 +239,9 @@ fun FoldersList(
     navController: NavController,
     displayedType: FolderType?
 ) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    val state = rememberScrollState()
+
+    Column(modifier = Modifier.verticalScroll(state)) {
         folders.forEach { folder ->
             if (displayedType == null || folder.type == displayedType) {
                 key(folder.id) {
@@ -262,7 +264,8 @@ fun FoldersList(
                                 modifier = Modifier
                                     .padding(10.dp)
                                     .clickable {
-                                        navController.navigate("folder/${folder.id}?folderType=${folder.type}")
+                                        navController.navigate(
+                                            "folder/${folder.id}?folderType=${folder.type}?folderTitle=${folder.title}")
                                     }
                             )
 

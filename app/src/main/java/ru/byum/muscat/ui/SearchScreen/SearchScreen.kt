@@ -105,7 +105,7 @@ fun SearchScreen(
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = "Search!"
+                                contentDescription = "Search"
                             )
                         },
                         trailingIcon = {
@@ -233,7 +233,7 @@ fun ReleasesList(
                     }
 
                     if (isClicked) {
-                        ListFoldersMenu(it.id)
+                        //ListFoldersMenu(it.id)
                     }
                 }
             }
@@ -306,7 +306,7 @@ fun ArtistsList(
                     }
 
                     if (isClicked) {
-                        ListFoldersMenu(it.id)
+                        //ListFoldersMenu(it.id)
                     }
                 }
             }

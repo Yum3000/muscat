@@ -54,24 +54,32 @@ fun MainNavigation(navController: NavHostController) {
                 navController,
             )
         }
-        composable("folder/{folder_id}?folderType={FolderType}",
+        composable("folder/{folder_id}?folderType={FolderType}?folderTitle={FolderTitle}",
             arguments = listOf(
                 navArgument("FolderType") {
+                    type = NavType.StringType
+                    nullable = true
+                } ,
+                        navArgument("FolderTitle") {
                     type = NavType.StringType
                     nullable = true
                 }
             )) {backStackEntry ->
             val folderId = backStackEntry.arguments?.getString("folder_id")!!
             val folderType = backStackEntry.arguments?.getString("FolderType") ?: ""
+            val folderTitle = backStackEntry.arguments?.getString("FolderTitle") ?: ""
 
             if(folderType == "RELEASES" ) {
                 FolderReleasesScreen(
                     folderId = folderId.toInt(),
+                    folderTitle = folderTitle,
                     modifier = Modifier.padding(16.dp),
                     navController
                 )
             } else {
-                FolderArtistsScreen(folderId = folderId.toInt(),
+                FolderArtistsScreen(
+                    folderId = folderId.toInt(),
+                    folderTitle = folderTitle,
                     modifier = Modifier.padding(16.dp),
                     navController)
             }

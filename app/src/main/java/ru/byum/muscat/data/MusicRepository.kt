@@ -24,6 +24,10 @@ interface MusicRepository {
 
     suspend fun getFolderArtists(id: Int): List<Artist>
     suspend fun addItemToFolder(folder: Int, item: String)
+
+    suspend fun getArtist(id: Int): Artist?
+
+    suspend fun getFoldersWithItem(itemID: Int) : List<Int>
 }
 
 class DefaultMusicRepository @Inject constructor(
@@ -51,8 +55,12 @@ class DefaultMusicRepository @Inject constructor(
     }
 
     override suspend fun getRelease(id: Int): Release? {
-        val release = discogs.getRelease(id)
-        return release?.toRelease()
+        val release = discogs.getRelease(id)?.toRelease()
+        val allRatings = musicDao.getAllRatings()
+
+        release?.rating = allRatings.find {it.itemId == release?.id}?.rating ?: 0
+        return release
+
     }
 
     override suspend fun setRating(id: Int, rating: Int) {
@@ -95,5 +103,20 @@ class DefaultMusicRepository @Inject constructor(
     override suspend fun addItemToFolder(folder: Int, item: String) {
         musicDao.addItemToFolder(FoldersItems(folder, item))
         Log.d("MusicRepository", "ID: ${item}")
+    }
+
+    override suspend fun getArtist(id: Int): Artist? {
+
+        val artist = discogs.getArtist(id)?.toArtist()
+        val allRatings = musicDao.getAllRatings()
+
+        artist?.rating = allRatings.find {it.itemId == artist?.id}?.rating ?: 0
+
+        return artist
+    }
+
+    override suspend fun getFoldersWithItem(itemID: Int): List<Int> {
+        val checking = musicDao.getFoldersItemsByItemId(itemID)
+        return checking.map {it.folder}
     }
 }

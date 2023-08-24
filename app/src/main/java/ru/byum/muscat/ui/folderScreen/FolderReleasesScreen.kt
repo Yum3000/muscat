@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -36,6 +38,7 @@ import ru.byum.muscat.ui.RatingBar.RatingBar
 @Composable
 fun FolderReleasesScreen(
     folderId: Int,
+    folderTitle: String,
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: FolderReleasesViewModel = hiltViewModel(),
@@ -45,7 +48,7 @@ fun FolderReleasesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "id is: $folderId") },
+                title = { Text(text = "${folderTitle}", fontWeight = FontWeight.SemiBold)},
                 navigationIcon = {
                     IconButton(modifier = Modifier.width(96.dp),
                         onClick = { navController.popBackStack() }) {
@@ -65,6 +68,7 @@ fun FolderReleasesScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             val loading by viewModel.loading.collectAsState()
 

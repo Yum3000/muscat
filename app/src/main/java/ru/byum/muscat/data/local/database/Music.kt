@@ -1,7 +1,6 @@
 package ru.byum.muscat.data.local.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
@@ -32,4 +31,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM FoldersItems WHERE folder = :folder")
     fun getFolderItems(folder: Int): List<FoldersItems>
+
+    @Query("SELECT * FROM FoldersItems WHERE item = :item")
+    fun getFoldersItemsByItemId(item: Int): List<FoldersItems>
 }

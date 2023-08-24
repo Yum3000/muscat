@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,10 +41,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.R
+import ru.byum.muscat.data.Folder
 import ru.byum.muscat.data.Release
 import ru.byum.muscat.ui.ListFoldersMenu
 import ru.byum.muscat.ui.Loader
@@ -59,6 +62,15 @@ fun ArtistScreen(
     viewModel: ArtistScreenViewModel = hiltViewModel(),
 ) {
     viewModel.init(artistID)
+
+    val artist by viewModel.artist.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val listOfFolders by viewModel.listOfFolders.collectAsStateWithLifecycle()
+    val foldersOfItem by viewModel.itemInFolders.collectAsStateWithLifecycle()
+
+    if (loading) {
+        Loader()
+    }
 
     Scaffold(
         topBar = {
@@ -80,17 +92,38 @@ fun ArtistScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            val loading by viewModel.loading.collectAsState()
 
             if (loading) {
                 Loader()
             }
 
+            Box() {
+                Column() {
+                    if (artist != null) {
+                        Text(
+                            text = "${artist?.name}",
+                            color = Color(0, 12, 120), fontSize = 30.sp,
+                            fontFamily = FontFamily.SansSerif
+                        )
+
+                        RatingBar(id = artistID.toInt(), rating = artist!!.rating,
+                            onRatingChang =
+                            { artistID, rating -> viewModel.setArtistRating(artistID, rating) }
+                        )
+                    }
+                }
+            }
+
             val releases by viewModel.releases.collectAsState()
+
+            if(loading)
+            {Loader()}
 
             ArtistReleasesList(
                 releases,
-                { id, rating -> viewModel.setReleaseRating(id, rating) }
+                listOfFolders,
+                foldersOfItem,
+                { id, rating -> viewModel.setReleaseRating(id, rating) },
             )
         }
     }
@@ -101,9 +134,13 @@ fun ArtistScreen(
 @Composable
 fun ArtistReleasesList(
     releases: List<Release>,
+    listOfFolders: List<Folder>,
+    folderOfItem: List<Int>,
     onRatingChange: (id: Int, rating: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+
+    val viewModel: ArtistScreenViewModel = hiltViewModel()
 
     if (releases.isEmpty()) {
         return
@@ -150,7 +187,10 @@ fun ArtistReleasesList(
 
                         var isClicked by remember { mutableStateOf(false) }
 
-                        IconButton(onClick = { isClicked = true }) {
+                        IconButton(onClick = {
+                            isClicked = true
+                            viewModel.setAddToFolderRelease(it.id)
+                        }) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = null
@@ -158,7 +198,11 @@ fun ArtistReleasesList(
                         }
 
                         if (isClicked) {
-                            ListFoldersMenu(it.id)
+                            ListFoldersMenu(
+                                listOfFolders,
+                                folderOfItem,
+                                {folderID -> viewModel.addItemToFolder(folderID) },
+                                {isClicked = false})
                         }
                     }
                 }

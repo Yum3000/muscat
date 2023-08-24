@@ -111,7 +111,11 @@ fun ReleaseScreen(
                             fontFamily = FontFamily.SansSerif
                         )
 
-                        //RatingBar(release!!.id)
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    RatingBar(release!!.id, release!!.rating,
+                        { releaseID, rating -> viewModel.setReleaseRating(releaseID, rating) }
+                    )
 
                 }
 
