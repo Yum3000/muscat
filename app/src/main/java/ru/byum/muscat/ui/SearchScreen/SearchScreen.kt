@@ -53,7 +53,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.byum.muscat.R
+import ru.byum.muscat.data.FolderType
 import ru.byum.muscat.data.network.NetworkArtistsSearchResults
 import ru.byum.muscat.ui.ListFoldersMenu
 import ru.byum.muscat.ui.Loader
@@ -166,7 +168,7 @@ fun SearchScreen(
         Box(modifier = Modifier.padding(padding)) {
             if (searchType == SearchType.ARTIST) {
                 val searchList by viewModel.artistsSearchResult.collectAsState()
-                ArtistsList(results = searchList, navController = navController)
+                ArtistsList(FolderType.ARTIST, results = searchList, navController = navController)
             } else if (searchType == SearchType.RELEASE) {
                 val searchList by viewModel.releasesSearchResult.collectAsState()
                 ReleasesList(results = searchList)
@@ -244,6 +246,7 @@ fun ReleasesList(
 @ExperimentalMaterial3Api
 @Composable
 fun ArtistsList(
+    folderType: FolderType,
     viewModel: SearchViewModel = hiltViewModel(),
     results: NetworkArtistsSearchResults?,
     navController: NavHostController
@@ -252,19 +255,29 @@ fun ArtistsList(
 
     var isClicked by remember {mutableStateOf(false)}
 
+
+    //val artist by viewModel.artist.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val listOfFolders by viewModel.listOfFolders.collectAsStateWithLifecycle()
+    val foldersOfItem by viewModel.itemInFolders.collectAsStateWithLifecycle()
+
     if (results == null) {
         return
     }
+
+    if(loading)
+    {Loader()}
 
     Column(
         modifier = Modifier.verticalScroll(state),
         verticalArrangement = Arrangement.Center,
     ) {
         results.results?.forEach {
+
             Row(modifier = Modifier.padding(10.dp)) {
                 if (it.thumb != "" && it.thumb != null) {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).data(it?.cover_image)
+                        model = ImageRequest.Builder(LocalContext.current).data(it.cover_image)
                             .crossfade(true).build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
@@ -285,19 +298,22 @@ fun ArtistsList(
 
                 Column {
                     Text(
-                        text = "${it?.title},\n",
+                        text = "${it.title},\n",
                         color = Color(0, 12, 120), fontSize = 30.sp,
                         fontFamily = FontFamily.SansSerif
                     )
 
                     Row {
                         IconButton(
-                            onClick = { navController.navigate("artistScreen/${it?.id}") }
+                            onClick = { navController.navigate("artistScreen/${it.id}") }
                         ) {
                             Icon(Icons.Default.List, contentDescription = "artist page")
                         }
 
-                        IconButton(onClick = { isClicked = true }) {
+                        IconButton(onClick = {
+                            isClicked = true
+                            viewModel.setAddToFolderArtist(it.id)
+                        }) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = null
@@ -306,7 +322,12 @@ fun ArtistsList(
                     }
 
                     if (isClicked) {
-                        //ListFoldersMenu(it.id)
+                        ListFoldersMenu(
+                            folderType,
+                            listOfFolders,
+                            foldersOfItem,
+                            {folderID -> viewModel.addItemToFolder(folderID) },
+                            {isClicked = false})
                     }
                 }
             }

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.byum.muscat.data.network.NetworkArtistsSearchResults
@@ -29,6 +31,30 @@ class SearchViewModel @Inject constructor(
 
     private var _listCurrentArtists = MutableStateFlow<NetworkArtistsSearchResults?>(null)
     var artistsSearchResult = _listCurrentArtists.asStateFlow()
+
+    private var _currentArtistAddToFolder = MutableStateFlow<Int?>(0)
+    var currentArtistAddToFolder = _currentArtistAddToFolder.asStateFlow()
+
+    private var _itemInFolders = MutableStateFlow<List<Int>>(listOf())
+    var itemInFolders = _itemInFolders.asStateFlow()
+
+    var listOfFolders = musicRepository.folders.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        listOf()
+    )
+
+    fun addItemToFolder(folderID: Int) {
+        val itemID = currentArtistAddToFolder.value.toString()
+
+        viewModelScope.launch(Dispatchers.IO){
+            musicRepository.addItemToFolder(folderID, itemID)
+        }
+    }
+
+    fun setAddToFolderArtist(id: Int?) {
+        _currentArtistAddToFolder.update { id }
+    }
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()

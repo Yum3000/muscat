@@ -47,6 +47,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.byum.muscat.R
 import ru.byum.muscat.data.Folder
+import ru.byum.muscat.data.FolderType
 import ru.byum.muscat.data.Release
 import ru.byum.muscat.ui.ListFoldersMenu
 import ru.byum.muscat.ui.Loader
@@ -199,6 +200,7 @@ fun ArtistReleasesList(
 
                         if (isClicked) {
                             ListFoldersMenu(
+                                FolderType.RELEASES,
                                 listOfFolders,
                                 folderOfItem,
                                 {folderID -> viewModel.addItemToFolder(folderID) },
