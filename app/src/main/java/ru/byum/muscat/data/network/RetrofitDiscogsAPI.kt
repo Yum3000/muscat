@@ -20,7 +20,10 @@ interface RetrofitDiscogsAPI {
     ): Response<ArtistNetwork>
 
     @GET("/artists/{artist_id}/releases")
-    suspend fun getArtistReleases(@Path("artist_id") artistID: Int?): Response<ArtistReleases>
+    suspend fun getArtistReleases(
+        @Path("artist_id") artistID: Int,
+        @Query("per_page") perPage: Int = 100,
+    ): Response<ArtistReleases>
 
     @GET("/database/search?")
     suspend fun onSearch(

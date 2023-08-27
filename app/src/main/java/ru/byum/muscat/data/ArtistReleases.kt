@@ -10,6 +10,7 @@ data class ArtistRelease(
     @JsonProperty("thumb") val thumb: String,
     @JsonProperty("title") val title: String,
     @JsonProperty("year") val year: Int,
+    @JsonProperty("type") val type: String,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

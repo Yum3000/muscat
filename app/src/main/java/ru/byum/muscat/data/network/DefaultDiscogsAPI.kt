@@ -8,14 +8,12 @@ public const val TAG = "DefaultDiscogsAPI"
 
 const val token = "MligNYkNjltvekeFWwkfXvNVejHZjkewRsYBgVoQ"
 
-class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
+class DefaultDiscogsAPI @Inject constructor() : DiscogsAPI {
     private val retrofit = RetrofitDiscogsClient.getClient()
     private val api = retrofit.create(RetrofitDiscogsAPI::class.java)
 
-    override suspend fun getArtistReleases(id: Int?): ArtistReleases? {
-        val response = api.getArtistReleases(id)
-
-        return response.body()
+    override suspend fun getArtistReleases(id: Int): ArtistReleases? {
+        return api.getArtistReleases(id).body()
     }
 
     override suspend fun searchReleases(query: String): NetworkReleaseSearchResults? {
@@ -31,7 +29,7 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
     }
 
     override suspend fun getRelease(releaseID: Int): ReleaseNetwork? {
-       val response = api.getRelease(releaseID, token)
+        val response = api.getRelease(releaseID, token)
         return response.body()
     }
 

@@ -49,7 +49,7 @@ class ArtistScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getReleases(id: Int?) {
+    private fun getReleases(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
 

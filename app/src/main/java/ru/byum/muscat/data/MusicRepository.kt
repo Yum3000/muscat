@@ -12,7 +12,7 @@ import javax.inject.Inject
 interface MusicRepository {
     suspend fun searchReleases(query: String): NetworkReleaseSearchResults?
     suspend fun searchArtists(query: String): NetworkArtistsSearchResults?
-    suspend fun getArtistReleases(id: Int?): List<Release>
+    suspend fun getArtistReleases(id: Int): List<Release>
     suspend fun getRelease(id: Int): Release?
     suspend fun setRating(id: Int, rating: Int)
 
@@ -27,7 +27,7 @@ interface MusicRepository {
 
     suspend fun getArtist(id: Int): Artist?
 
-    suspend fun getFoldersWithItem(itemID: Int) : List<Int>
+    suspend fun getFoldersWithItem(itemID: Int): List<Int>
 }
 
 class DefaultMusicRepository @Inject constructor(
@@ -42,12 +42,13 @@ class DefaultMusicRepository @Inject constructor(
         return discogs.searchArtists(query)
     }
 
-    override suspend fun getArtistReleases(id: Int?): List<Release> {
+    override suspend fun getArtistReleases(id: Int): List<Release> {
         val artistReleases = discogs.getArtistReleases(id)
         val allRatings = musicDao.getAllRatings()
 
-        return artistReleases?.releases
-            ?.map { artistRelease ->
+        return artistReleases?.releases.orEmpty()
+            .filter { it.type == "master" }
+            .map { artistRelease ->
                 val release = artistRelease.toRelease()
                 release.rating = allRatings.find { it.itemId == release.id }?.rating ?: 0
                 release
@@ -58,7 +59,7 @@ class DefaultMusicRepository @Inject constructor(
         val release = discogs.getRelease(id)?.toRelease()
         val allRatings = musicDao.getAllRatings()
 
-        release?.rating = allRatings.find {it.itemId == release?.id}?.rating ?: 0
+        release?.rating = allRatings.find { it.itemId == release?.id }?.rating ?: 0
         return release
 
     }
@@ -87,7 +88,7 @@ class DefaultMusicRepository @Inject constructor(
 
         return folderReleases
             .mapNotNull { discogs.getRelease(it.item.toInt()) }
-            .map {networkRelease ->
+            .map { networkRelease ->
                 val release = networkRelease.toRelease()
                 release.rating = allRatings.find { it.itemId == release.id }?.rating ?: 0
                 release
@@ -110,13 +111,13 @@ class DefaultMusicRepository @Inject constructor(
         val artist = discogs.getArtist(id)?.toArtist()
         val allRatings = musicDao.getAllRatings()
 
-        artist?.rating = allRatings.find {it.itemId == artist?.id}?.rating ?: 0
+        artist?.rating = allRatings.find { it.itemId == artist?.id }?.rating ?: 0
 
         return artist
     }
 
     override suspend fun getFoldersWithItem(itemID: Int): List<Int> {
         val checking = musicDao.getFoldersItemsByItemId(itemID)
-        return checking.map {it.folder}
+        return checking.map { it.folder }
     }
 }

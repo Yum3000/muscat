@@ -7,7 +7,7 @@ interface DiscogsAPI {
 
     suspend fun searchArtists(query:String) : NetworkArtistsSearchResults?
 
-    suspend fun getArtistReleases(id: Int?): ArtistReleases?
+    suspend fun getArtistReleases(id: Int): ArtistReleases?
 
     suspend fun getRelease(releaseID: Int): ReleaseNetwork?
 
