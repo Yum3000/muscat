@@ -1,6 +1,7 @@
 package ru.byum.muscat.ui.SearchScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -171,7 +172,7 @@ fun SearchScreen(
                 ArtistsList(FolderType.ARTIST, results = searchList, navController = navController)
             } else if (searchType == SearchType.RELEASE) {
                 val searchList by viewModel.releasesSearchResult.collectAsState()
-                ReleasesList(results = searchList)
+                ReleasesList(FolderType.RELEASES, results = searchList)
             }
         }
     }
@@ -180,10 +181,14 @@ fun SearchScreen(
 @ExperimentalMaterial3Api
 @Composable
 fun ReleasesList(
+    folderType: FolderType,
     viewModel: SearchViewModel = hiltViewModel(),
     results: NetworkReleaseSearchResults?
 ) {
     val state = rememberScrollState()
+
+    val listOfFolders by viewModel.listOfFolders.collectAsStateWithLifecycle()
+    val foldersOfItem by viewModel.itemInFolders.collectAsStateWithLifecycle()
 
     if (results == null) {
         return
@@ -227,7 +232,11 @@ fun ReleasesList(
 
                     var isClicked by remember {mutableStateOf(false)}
 
-                    IconButton(onClick = { isClicked = true }) {
+                    IconButton(onClick = {
+                        isClicked = true
+                        viewModel.setAddToFolderRelease(it.id)
+                        Log.d("Search screen", "${it.title}, ${it.id}")
+                    }) {
                         Icon(
                             Icons.Default.Add,
                             contentDescription = null
@@ -235,7 +244,12 @@ fun ReleasesList(
                     }
 
                     if (isClicked) {
-                        //ListFoldersMenu(it.id)
+                        ListFoldersMenu(
+                            folderType,
+                            listOfFolders,
+                            foldersOfItem,
+                            {folderID -> viewModel.addReleaseToFolder(folderID) },
+                            {isClicked = false})
                     }
                 }
             }
@@ -326,7 +340,7 @@ fun ArtistsList(
                             folderType,
                             listOfFolders,
                             foldersOfItem,
-                            {folderID -> viewModel.addItemToFolder(folderID) },
+                            {folderID -> viewModel.addArtistToFolder(folderID) },
                             {isClicked = false})
                     }
                 }

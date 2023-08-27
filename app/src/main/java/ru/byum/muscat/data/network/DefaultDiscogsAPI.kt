@@ -19,7 +19,7 @@ class DefaultDiscogsAPI @Inject constructor(): DiscogsAPI {
     }
 
     override suspend fun searchReleases(query: String): NetworkReleaseSearchResults? {
-        val response = api.onSearch(query, "release", token)
+        val response = api.onSearch(query, "master", token)
 
         return response.body()
     }

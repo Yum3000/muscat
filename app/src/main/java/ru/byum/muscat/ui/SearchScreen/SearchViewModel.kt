@@ -38,14 +38,25 @@ class SearchViewModel @Inject constructor(
     private var _itemInFolders = MutableStateFlow<List<Int>>(listOf())
     var itemInFolders = _itemInFolders.asStateFlow()
 
+    private var _currentReleaseAddToFolder = MutableStateFlow<Int?>(0)
+    var currentReleaseAddToFolder = _currentReleaseAddToFolder.asStateFlow()
+
     var listOfFolders = musicRepository.folders.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         listOf()
     )
 
-    fun addItemToFolder(folderID: Int) {
+    fun addArtistToFolder(folderID: Int) {
         val itemID = currentArtistAddToFolder.value.toString()
+
+        viewModelScope.launch(Dispatchers.IO){
+            musicRepository.addItemToFolder(folderID, itemID)
+        }
+    }
+
+    fun addReleaseToFolder(folderID: Int) {
+        val itemID = currentReleaseAddToFolder.value.toString()
 
         viewModelScope.launch(Dispatchers.IO){
             musicRepository.addItemToFolder(folderID, itemID)
@@ -54,6 +65,10 @@ class SearchViewModel @Inject constructor(
 
     fun setAddToFolderArtist(id: Int?) {
         _currentArtistAddToFolder.update { id }
+    }
+
+    fun setAddToFolderRelease(id: Int?) {
+        _currentReleaseAddToFolder.update { id }
     }
 
     private val _loading = MutableStateFlow(false)
