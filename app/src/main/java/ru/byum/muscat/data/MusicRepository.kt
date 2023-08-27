@@ -1,6 +1,5 @@
 package ru.byum.muscat.data
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import ru.byum.muscat.data.local.database.MusicDao
 import ru.byum.muscat.data.local.database.Rating
@@ -28,6 +27,7 @@ interface MusicRepository {
     suspend fun getArtist(id: Int): Artist?
 
     suspend fun getFoldersWithItem(itemID: Int): List<Int>
+    suspend fun toggleItemInFolder(folder: Int, item: Int)
 }
 
 class DefaultMusicRepository @Inject constructor(
@@ -52,7 +52,7 @@ class DefaultMusicRepository @Inject constructor(
                 val release = artistRelease.toRelease()
                 release.rating = allRatings.find { it.itemId == release.id }?.rating ?: 0
                 release
-            } ?: listOf()
+            }
     }
 
     override suspend fun getRelease(id: Int): Release? {
@@ -103,7 +103,16 @@ class DefaultMusicRepository @Inject constructor(
 
     override suspend fun addItemToFolder(folder: Int, item: String) {
         musicDao.addItemToFolder(FoldersItems(folder, item))
-        Log.d("MusicRepository", "ID: ${item}")
+    }
+
+    override suspend fun toggleItemInFolder(folder: Int, item: Int) {
+        val alreadyInFolder = musicDao.isItemInFolder(folder, item)
+
+        if (!alreadyInFolder) {
+            musicDao.addItemToFolder(FoldersItems(folder, item.toString()))
+        } else {
+            musicDao.removeItemFromFolder(folder, item)
+        }
     }
 
     override suspend fun getArtist(id: Int): Artist? {
@@ -117,7 +126,7 @@ class DefaultMusicRepository @Inject constructor(
     }
 
     override suspend fun getFoldersWithItem(itemID: Int): List<Int> {
-        val checking = musicDao.getFoldersItemsByItemId(itemID)
+        val checking = musicDao.getFoldersItemsByItem(itemID)
         return checking.map { it.folder }
     }
 }

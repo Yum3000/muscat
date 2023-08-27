@@ -1,6 +1,5 @@
 package ru.byum.muscat.ui
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,23 +30,18 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import ru.byum.muscat.data.Folder
 import ru.byum.muscat.data.FolderType
-import ru.byum.muscat.ui.SearchScreen.SearchType
 
 @ExperimentalMaterial3Api
 @Composable
 fun ListFoldersMenu(
     folderType: FolderType,
     listOfFolders: List<Folder>,
-    foldersOfItem: List<Int>,
-    onClick: (folderID: Int) -> Unit,
+    checkedFolders: List<Int>,
+    onToggle: (folderID: Int) -> Unit,
     onClose: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-
-    foldersOfItem.forEach { itemIndex ->
-        Log.d("out modal", "$itemIndex")
-    }
 
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
@@ -61,27 +54,26 @@ fun ListFoldersMenu(
                 .padding(bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = {
-                scope
-                    .launch {
+            IconButton(
+                onClick = {
+                    scope.launch {
                         if (sheetState.isVisible) sheetState.hide() else sheetState.expand()
                     }.invokeOnCompletion { onClose() }
-            }) {
+                }
+            ) {
                 Icon(Icons.Default.Close, contentDescription = "close modal bottom sheet")
             }
 
-            listOfFolders.forEach { folder ->
-                if (folder.type == folderType) {
-                    var selected by remember { mutableStateOf(false) }
+            listOfFolders
+                .filter { it.type == folderType }
+                .forEach { folder ->
+                    val checked = checkedFolders.contains(folder.id)
 
                     Card(
                         Modifier
                             .padding(5.dp)
                             .fillMaxWidth()
-                            .clickable {
-                                selected = true
-                                onClick(folder.id)
-                            }
+                            .clickable { onToggle(folder.id) }
                     ) {
                         Box(modifier = Modifier.padding(start = 10.dp)) {
                             Row() {
@@ -97,15 +89,13 @@ fun ListFoldersMenu(
                                         .fillMaxWidth()
                                 )
 
-                                if (selected) {
+                                if (checked) {
                                     Icon(Icons.Default.Done, contentDescription = "checked")
                                 }
                             }
-
                         }
                     }
                 }
-            }
         }
     }
 }

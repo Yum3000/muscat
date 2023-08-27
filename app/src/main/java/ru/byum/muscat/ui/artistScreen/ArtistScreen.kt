@@ -154,6 +154,21 @@ fun ArtistReleasesList(
         modifier = Modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
     ) {
+        var foldersMenuOpened by remember { mutableStateOf(false) }
+
+        if (foldersMenuOpened) {
+            ListFoldersMenu(
+                FolderType.RELEASES,
+                listOfFolders,
+                folderOfItem,
+                { folderID -> viewModel.toggleItemInFolder(folderID) },
+                {
+                    foldersMenuOpened = false
+                    viewModel.clearItemFolders()
+                }
+            )
+        }
+
         releases.forEach {
             key(it.id) {
                 Row(modifier = Modifier.padding(10.dp)) {
@@ -182,32 +197,20 @@ fun ArtistReleasesList(
                         modifier = Modifier.background(Color.Transparent)
                     ) {
                         Text(
-                            text = "${it.artist}:\n${it.id}\n${it.title},\n${it.year}",
+                            text = "${it.title}\n${it.year}",
                             color = Color(0, 12, 120), fontSize = 30.sp,
                             fontFamily = FontFamily.SansSerif
                         )
 
                         RatingBar(it.id, it.rating, onRatingChange)
 
-                        var isClicked by remember { mutableStateOf(false) }
-
                         IconButton(onClick = {
-                            isClicked = true
+                            foldersMenuOpened = true
                             viewModel.setAddToFolderRelease(it.id)
                         }) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = null
-                            )
-                        }
-
-                        if (isClicked) {
-                            ListFoldersMenu(
-                                FolderType.RELEASES,
-                                listOfFolders,
-                                folderOfItem,
-                                { folderID -> viewModel.addItemToFolder(folderID) },
-                                { isClicked = false }
                             )
                         }
                     }

@@ -29,9 +29,16 @@ interface MusicDao {
     @Insert(entity = FoldersItems::class)
     fun addItemToFolder(folder: FoldersItems)
 
+    @Query("DELETE FROM FoldersItems WHERE folder = :folder AND item = :item")
+    fun removeItemFromFolder(folder: Int, item: Int)
+
     @Query("SELECT * FROM FoldersItems WHERE folder = :folder")
     fun getFolderItems(folder: Int): List<FoldersItems>
 
     @Query("SELECT * FROM FoldersItems WHERE item = :item")
-    fun getFoldersItemsByItemId(item: Int): List<FoldersItems>
+    fun getFoldersItemsByItem(item: Int): List<FoldersItems>
+
+    @Query("SELECT EXISTS(SELECT * FROM FoldersItems WHERE folder = :folder AND item = :item)")
+    fun isItemInFolder(folder: Int, item: Int): Boolean
+
 }

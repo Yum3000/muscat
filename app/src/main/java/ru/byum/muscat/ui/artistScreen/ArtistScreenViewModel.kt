@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.byum.muscat.data.Artist
-import ru.byum.muscat.data.FoldersItems
 import ru.byum.muscat.data.MusicRepository
 import ru.byum.muscat.data.Release
 import javax.inject.Inject
@@ -60,7 +59,7 @@ class ArtistScreenViewModel @Inject constructor(
         }
     }
 
-    fun setArtistRating(artistID: Int, rating: Int){
+    fun setArtistRating(artistID: Int, rating: Int) {
         val artist = _artist.value
         artist?.rating = rating
         _artist.update { artist }
@@ -81,21 +80,8 @@ class ArtistScreenViewModel @Inject constructor(
         }
     }
 
-
-    private var _currentReleaseAddToFolder = MutableStateFlow<Int>(0)
+    private var _currentReleaseAddToFolder = MutableStateFlow(0)
     var currentReleaseAddToFolder = _currentReleaseAddToFolder.asStateFlow()
-
-    private var _chosenFolder = MutableStateFlow(false)
-    var chosenFolder = _chosenFolder.asStateFlow()
-
-    private var _createModalBottom = MutableStateFlow(false)
-    var createModalBottom = _createModalBottom.asStateFlow()
-
-    fun toggleCreateModalBottom() {
-        val state = createModalBottom.value
-        _createModalBottom.update { !state }
-    }
-
 
     var listOfFolders = musicRepository.folders.stateIn(
         viewModelScope,
@@ -103,25 +89,23 @@ class ArtistScreenViewModel @Inject constructor(
         listOf()
     )
 
-    fun addItemToFolder(folderID: Int) {
-        val itemID = currentReleaseAddToFolder.value.toString()
+    fun toggleItemInFolder(folderID: Int) {
+        val itemID = currentReleaseAddToFolder.value
 
-        viewModelScope.launch(Dispatchers.IO){
-            musicRepository.addItemToFolder(folderID, itemID)
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.toggleItemInFolder(folderID, itemID)
+            _itemInFolders.update { musicRepository.getFoldersWithItem(itemID) }
         }
     }
 
     fun setAddToFolderRelease(id: Int) {
         _currentReleaseAddToFolder.update { id }
-    }
-
-    fun checkItemInFolders(itemID: Int) {
-
-        _loading.update { true }
         viewModelScope.launch(Dispatchers.IO) {
-            _itemInFolders.update { musicRepository.getFoldersWithItem(itemID) }
+            _itemInFolders.update { musicRepository.getFoldersWithItem(id) }
         }
-        _loading.update { false }
     }
 
+    fun clearItemFolders() {
+        _itemInFolders.update { listOf() }
+    }
 }
