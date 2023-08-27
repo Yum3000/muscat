@@ -117,14 +117,17 @@ fun ArtistScreen(
 
             val releases by viewModel.releases.collectAsState()
 
-            if(loading)
-            {Loader()}
+            if (loading) {
+                Loader()
+            }
 
             ArtistReleasesList(
                 releases,
                 listOfFolders,
                 foldersOfItem,
-                { id, rating -> viewModel.setReleaseRating(id, rating) },
+                onRatingChange = { id, rating ->
+                    viewModel.setReleaseRating(id, rating)
+                },
             )
         }
     }
@@ -203,8 +206,9 @@ fun ArtistReleasesList(
                                 FolderType.RELEASES,
                                 listOfFolders,
                                 folderOfItem,
-                                {folderID -> viewModel.addItemToFolder(folderID) },
-                                {isClicked = false})
+                                { folderID -> viewModel.addItemToFolder(folderID) },
+                                { isClicked = false }
+                            )
                         }
                     }
                 }

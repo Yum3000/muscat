@@ -40,32 +40,21 @@ fun ListFoldersMenu(
     folderType: FolderType,
     listOfFolders: List<Folder>,
     foldersOfItem: List<Int>,
-    onClick: (folderID : Int) -> Unit,
+    onClick: (folderID: Int) -> Unit,
     onClose: () -> Unit,
 ) {
-
-    //val foldersViewModel: FoldersListMenuViewModel = hiltViewModel()
-
-    //val createModalOpen by foldersViewModel.createModalBottom.collectAsState()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-
-
-    var selectedText by remember { mutableStateOf("Select folder to add") }
 
     foldersOfItem.forEach { itemIndex ->
         Log.d("out modal", "$itemIndex")
     }
 
-
-    //if (createModalOpen) {
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         sheetState = sheetState,
-        onDismissRequest = { }//foldersViewModel.toggleCreateModalBottom() }
+        onDismissRequest = { onClose() }
     ) {
-        //val chosenFolder by foldersViewModel.chosenFolder.collectAsState()
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -82,20 +71,8 @@ fun ListFoldersMenu(
             }
 
             listOfFolders.forEach { folder ->
-
                 if (folder.type == folderType) {
-
                     var selected by remember { mutableStateOf(false) }
-
-                    Log.d("MyMenu", "HELLO THERE ${folder.title}")
-
-                    foldersOfItem.forEach { itemIndex ->
-                        Log.d("Menu!", "$itemIndex")
-//                    if (folder.id == it) {
-//                        Log.d("MENU", "${folder.id} == $it")
-//                        selected = true
-//                    }
-                    }
 
                     Card(
                         Modifier
@@ -105,20 +82,7 @@ fun ListFoldersMenu(
                                 selected = true
                                 onClick(folder.id)
                             }
-//                        .clickable(
-//                            enabled = (selected == true),
-//
-//                            onClick = {
-//                                onClick(folder.id)
-//                                selected = true
-////                                scope.launch {
-////                                    if (sheetState.isVisible) sheetState.hide() else sheetState.expand()
-////                                }.invokeOnCompletion {
-////                                    onClose()
-////                                }
-//                            })
                     ) {
-                        //Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(modifier = Modifier.padding(start = 10.dp)) {
                             Row() {
                                 Text(
@@ -142,6 +106,6 @@ fun ListFoldersMenu(
                     }
                 }
             }
-            }
         }
     }
+}
