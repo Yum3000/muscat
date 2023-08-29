@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.byum.muscat.data.Artist
 import ru.byum.muscat.data.MusicRepository
-import ru.byum.muscat.data.Release
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,6 +38,25 @@ class FolderArtistsViewModel @Inject constructor(
 
             _loading.update { false }
 
+        }
+    }
+
+    fun setArtistRating(artistID: Int, rating: Int) {
+        val artists = _artists.value.toMutableList()
+        val artist = artists.find { it.id == artistID }
+        artist?.rating = rating
+
+        _artists.update { artists }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.setRating(artistID, rating)
+        }
+    }
+
+    fun deleteArtist(folder: Int, artistID: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.removeItemFromFolder(folder, artistID)
+            _artists.update { musicRepository.getFolderArtists(folder)  }
         }
     }
 }

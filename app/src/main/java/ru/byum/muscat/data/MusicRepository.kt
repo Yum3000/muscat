@@ -18,6 +18,8 @@ interface MusicRepository {
     val folders: Flow<List<Folder>>
     suspend fun createFolder(title: String, type: FolderType)
     suspend fun deleteFolder(id: Int)
+
+    suspend fun removeItemFromFolder(folder: Int, artistID: Int)
     suspend fun getFolderItems(id: Int): List<String>
     suspend fun getFolderReleases(id: Int): List<Release>
 
@@ -129,4 +131,9 @@ class DefaultMusicRepository @Inject constructor(
         val checking = musicDao.getFoldersItemsByItem(itemID)
         return checking.map { it.folder }
     }
+
+    override suspend fun removeItemFromFolder(folder: Int, itemID: Int) {
+        musicDao.removeItemFromFolder(folder, itemID)
+    }
+
 }

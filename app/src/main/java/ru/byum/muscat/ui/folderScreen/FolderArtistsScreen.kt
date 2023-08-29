@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -12,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import ru.byum.muscat.ui.Loader
+import ru.byum.muscat.ui.RatingBar.RatingBar
 
 @OptIn(ExperimentalMaterial3Api::class, InternalComposeApi::class)
 @Composable
@@ -84,6 +88,11 @@ fun FolderArtistsScreen(
                                 .padding(5.dp)
                                 .fillMaxWidth()
                         ) {
+                            RatingBar(
+                                artist.id,
+                                artist.rating,
+                                { id, newRating -> viewModel.setArtistRating(id, newRating) },
+                            )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     artist.name,
@@ -95,12 +104,25 @@ fun FolderArtistsScreen(
                                             navController.navigate("artistScreen/${artist.id}")
                                         }
                                 )
+
+                                Spacer(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+
+                                IconButton(
+                                    onClick = { viewModel.deleteArtist(folderId, artist.id) }) {
+                                    Icon(
+                                        Icons.Filled.Delete,
+                                        contentDescription = "delete",
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
     }
 }

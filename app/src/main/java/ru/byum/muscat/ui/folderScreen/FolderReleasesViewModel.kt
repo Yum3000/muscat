@@ -51,4 +51,11 @@ class FolderReleasesViewModel @Inject constructor(
             musicRepository.setRating(releaseID, rating)
         }
     }
+
+    fun deleteRelease(folder: Int, releaseID: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.removeItemFromFolder(folder, releaseID)
+            _releases.update { musicRepository.getFolderReleases(folder)  }
+        }
+    }
 }

@@ -198,6 +198,20 @@ fun ReleasesList(
         modifier = Modifier.verticalScroll(state),
         verticalArrangement = Arrangement.Center,
     ) {
+        var foldersMenuOpened by remember { mutableStateOf(false) }
+
+        if (foldersMenuOpened) {
+            ListFoldersMenu(
+                folderType,
+                listOfFolders,
+                foldersOfItem,
+                {folderID -> viewModel.toggleReleaseInFolder(folderID) },
+                {
+                    foldersMenuOpened = false
+                    viewModel.clearItemFolders()
+                })
+        }
+
         results.results?.forEach {
             Row(modifier = Modifier.padding(10.dp)) {
                 if (it.thumb != "" && it.thumb != null) {
@@ -230,26 +244,15 @@ fun ReleasesList(
                         fontFamily = FontFamily.SansSerif
                     )
 
-                    var isClicked by remember {mutableStateOf(false)}
-
                     IconButton(onClick = {
-                        isClicked = true
-                        viewModel.setAddToFolderRelease(it.id)
-                        Log.d("Search screen", "${it.title}, ${it.id}")
+                        foldersMenuOpened = true
+                        viewModel.setAddToFolderRelease(it.id!!)
+
                     }) {
                         Icon(
                             Icons.Default.Add,
                             contentDescription = null
                         )
-                    }
-
-                    if (isClicked) {
-                        ListFoldersMenu(
-                            folderType,
-                            listOfFolders,
-                            foldersOfItem,
-                            {folderID -> viewModel.addReleaseToFolder(folderID) },
-                            {isClicked = false})
                     }
                 }
             }
@@ -267,10 +270,8 @@ fun ArtistsList(
 ) {
     val state = rememberScrollState()
 
-    var isClicked by remember {mutableStateOf(false)}
+    var foldersMenuOpened by remember {mutableStateOf(false)}
 
-
-    //val artist by viewModel.artist.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val listOfFolders by viewModel.listOfFolders.collectAsStateWithLifecycle()
     val foldersOfItem by viewModel.itemInFolders.collectAsStateWithLifecycle()
@@ -286,6 +287,18 @@ fun ArtistsList(
         modifier = Modifier.verticalScroll(state),
         verticalArrangement = Arrangement.Center,
     ) {
+        if (foldersMenuOpened) {
+            ListFoldersMenu(
+                folderType,
+                listOfFolders,
+                foldersOfItem,
+                {folderID -> viewModel.toggleArtistInFolder(folderID) },
+                {
+                    foldersMenuOpened = false
+                    viewModel.clearItemFolders()
+                })
+        }
+
         results.results?.forEach {
 
             Row(modifier = Modifier.padding(10.dp)) {
@@ -325,23 +338,14 @@ fun ArtistsList(
                         }
 
                         IconButton(onClick = {
-                            isClicked = true
-                            viewModel.setAddToFolderArtist(it.id)
+                            foldersMenuOpened = true
+                            viewModel.setAddToFolderArtist(it.id!!)
                         }) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = null
                             )
                         }
-                    }
-
-                    if (isClicked) {
-                        ListFoldersMenu(
-                            folderType,
-                            listOfFolders,
-                            foldersOfItem,
-                            {folderID -> viewModel.addArtistToFolder(folderID) },
-                            {isClicked = false})
                     }
                 }
             }

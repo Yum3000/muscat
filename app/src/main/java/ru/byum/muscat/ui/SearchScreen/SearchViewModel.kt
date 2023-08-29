@@ -32,13 +32,13 @@ class SearchViewModel @Inject constructor(
     private var _listCurrentArtists = MutableStateFlow<NetworkArtistsSearchResults?>(null)
     var artistsSearchResult = _listCurrentArtists.asStateFlow()
 
-    private var _currentArtistAddToFolder = MutableStateFlow<Int?>(0)
+    private var _currentArtistAddToFolder = MutableStateFlow<Int>(0)
     var currentArtistAddToFolder = _currentArtistAddToFolder.asStateFlow()
 
     private var _itemInFolders = MutableStateFlow<List<Int>>(listOf())
     var itemInFolders = _itemInFolders.asStateFlow()
 
-    private var _currentReleaseAddToFolder = MutableStateFlow<Int?>(0)
+    private var _currentReleaseAddToFolder = MutableStateFlow(0)
     var currentReleaseAddToFolder = _currentReleaseAddToFolder.asStateFlow()
 
     var listOfFolders = musicRepository.folders.stateIn(
@@ -63,12 +63,18 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun setAddToFolderArtist(id: Int?) {
+    fun setAddToFolderArtist(id: Int) {
         _currentArtistAddToFolder.update { id }
+        viewModelScope.launch(Dispatchers.IO) {
+            _itemInFolders.update { musicRepository.getFoldersWithItem(id) }
+        }
     }
 
-    fun setAddToFolderRelease(id: Int?) {
+    fun setAddToFolderRelease(id: Int) {
         _currentReleaseAddToFolder.update { id }
+        viewModelScope.launch(Dispatchers.IO) {
+            _itemInFolders.update { musicRepository.getFoldersWithItem(id) }
+        }
     }
 
     private val _loading = MutableStateFlow(false)
@@ -102,6 +108,28 @@ class SearchViewModel @Inject constructor(
 
             _loading.update { false }
         }
+    }
+
+    fun toggleReleaseInFolder(folderID: Int) {
+        val itemID = currentReleaseAddToFolder.value
+
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.toggleItemInFolder(folderID, itemID)
+            _itemInFolders.update { musicRepository.getFoldersWithItem(itemID) }
+        }
+    }
+
+    fun toggleArtistInFolder(folderID: Int) {
+        val itemID = currentArtistAddToFolder.value
+
+        viewModelScope.launch(Dispatchers.IO) {
+            musicRepository.toggleItemInFolder(folderID, itemID)
+            _itemInFolders.update { musicRepository.getFoldersWithItem(itemID) }
+        }
+    }
+
+    fun clearItemFolders() {
+        _itemInFolders.update { listOf() }
     }
 }
 
