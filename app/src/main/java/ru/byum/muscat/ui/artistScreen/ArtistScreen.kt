@@ -99,7 +99,7 @@ fun ArtistScreen(
             }
 
             Box() {
-                Column() {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (artist != null) {
                         Text(
                             text = "${artist?.name}",
@@ -107,28 +107,59 @@ fun ArtistScreen(
                             fontFamily = FontFamily.SansSerif
                         )
 
+                        Spacer(modifier = Modifier.height(20.dp))
+
+
+                        //Row(modifier = Modifier.padding(10.dp)) {
+                        if (artist?.images != "") {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(artist?.images)
+                                    .crossfade(true).build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+
+                                modifier = Modifier
+                                    .height(100.dp)
+                                    .width(100.dp),
+                                alignment = Alignment.BottomEnd
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.no_image),
+                                contentDescription = ""
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+                        //}
+
+
                         RatingBar(id = artistID.toInt(), rating = artist!!.rating,
                             onRatingChang =
                             { artistID, rating -> viewModel.setArtistRating(artistID, rating) }
                         )
+
                     }
                 }
             }
+            Box(){
 
-            val releases by viewModel.releases.collectAsState()
+                val releases by viewModel.releases.collectAsState()
 
-            if (loading) {
-                Loader()
+                if (loading) {
+                    Loader()
+                }
+
+                ArtistReleasesList(
+                    releases,
+                    listOfFolders,
+                    foldersOfItem,
+                    onRatingChange = { id, rating ->
+                        viewModel.setReleaseRating(id, rating)
+                    },
+                )
             }
-
-            ArtistReleasesList(
-                releases,
-                listOfFolders,
-                foldersOfItem,
-                onRatingChange = { id, rating ->
-                    viewModel.setReleaseRating(id, rating)
-                },
-            )
         }
     }
 }

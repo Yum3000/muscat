@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +53,7 @@ fun ReleaseScreen(
     modifier: Modifier = Modifier,
     viewModel: ReleaseScreenViewModel = hiltViewModel()
 ) {
+    val scrollState = rememberScrollState()
 
     viewModel.init(id.toInt())
 
@@ -74,16 +77,28 @@ fun ReleaseScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(padding)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            //verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-
                 val release by viewModel.release.collectAsState()
                 if (release != null) {
                     if (release?.image != "") {
+
+                        Text(
+                            text = "${release?.artist} " +
+                                    "\"${release?.title}\", " + "${release?.year}",
+                            Modifier.padding(38.dp),
+
+                            color = Color(0, 12, 120), fontSize = 28.sp,
+                            fontFamily = FontFamily.SansSerif
+                        )
+
+                        //Spacer(modifier = Modifier.height(18.dp))
+
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current).data(release?.image)
                                 .crossfade(true).build(),
@@ -104,21 +119,18 @@ fun ReleaseScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                        Text(
-                            text = "${release?.artist}\n\n" +
-                                    "${release?.title},\n" + "${release?.year}",
-                            color = Color(0, 12, 120), fontSize = 30.sp,
-                            fontFamily = FontFamily.SansSerif
-                        )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
                     RatingBar(release!!.id, release!!.rating,
                         { releaseID, rating -> viewModel.setReleaseRating(releaseID, rating) }
                     )
 
-                }
+                    Spacer(modifier = Modifier.height(20.dp))
 
+                    release!!.tracklist.forEachIndexed{ index, title ->
+                        Text(text = "${index+1}. ${title}\n",
+                            color = Color(0, 12, 120), fontSize = 22.sp,
+                            fontFamily = FontFamily.SansSerif)
+                    }
+                }
         }
     }
 }

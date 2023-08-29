@@ -15,10 +15,16 @@ data class Image(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+data class Track(
+    @JsonProperty("title") val title: String
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ReleaseNetwork(
     @JsonProperty("id") val id: Int,
     @JsonProperty("title") val title: String,
     @JsonProperty("year") val year: String,
     @JsonProperty("artists") val artists: List<ReleaseArtist>,
-    @JsonProperty("images") val images: List<Image>
+    @JsonProperty("images") val images: List<Image>,
+    @JsonProperty("tracklist") val tracklist: List<Track>
 )

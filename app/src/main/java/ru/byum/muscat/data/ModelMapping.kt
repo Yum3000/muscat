@@ -6,24 +6,25 @@ import ru.byum.muscat.data.network.ReleaseArtist
 import ru.byum.muscat.data.network.ReleaseNetwork
 
 fun ReleaseNetwork.toRelease(): Release {
-    return Release(id, title, year, artists[0].name, images[0].uri ?: "")
+    return Release(id, title, year, artists[0].name, images[0].uri ?: "", tracklist
+        .map { it.title})
 }
 
-fun Release.toNetworkRelease(): ReleaseNetwork {
-    return ReleaseNetwork(
-        id,
-        title,
-        year,
-        listOf(ReleaseArtist(artist)),
-        listOf(Image(image))
-    )
-}
+//fun Release.toNetworkRelease(): ReleaseNetwork {
+//    return ReleaseNetwork(
+//        id,
+//        title,
+//        year,
+//        listOf(ReleaseArtist(artist)),
+//        listOf(Image(image))
+//    )
+//}
 
 fun ArtistNetwork.toArtist(): Artist {
-    return Artist(id, name)
+    return Artist(id, name, images[0].uri ?: "")
 }
 
 fun ArtistRelease.toRelease(): Release {
-    return Release(id, title, year.toString(), artist, thumb)
+    return Release(id, title, year.toString(), artist, thumb, tracklist = listOf())
 }
 

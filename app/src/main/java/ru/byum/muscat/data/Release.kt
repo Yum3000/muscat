@@ -6,5 +6,6 @@ data class Release(
     val year: String = "",
     val artist: String = "",
     val image: String = "",
+    val tracklist: List<String>,
     var rating: Int = 0,
 )

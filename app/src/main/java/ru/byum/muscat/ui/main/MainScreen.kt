@@ -86,7 +86,7 @@ internal fun MainScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.search_icon),
+                    painter = painterResource(id = R.drawable.search),
                     contentDescription = "Search",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
@@ -124,7 +124,7 @@ internal fun MainScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.folder_icon),
+                    painter = painterResource(id = R.drawable.folder),
                     contentDescription = "Folders",
                     //tint = Color.White,
                     modifier = Modifier.size(45.dp)
@@ -162,7 +162,7 @@ internal fun MainScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.stats_icon),
+                    painter = painterResource(id = R.drawable.statistical),
                     contentDescription = "Stats",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)
@@ -199,8 +199,9 @@ internal fun MainScreen(
                     fontSize = 23.sp
                 )
                 Spacer(modifier = Modifier.size(10.dp))
+
                 Icon(
-                    imageVector = Icons.Rounded.Info,
+                    painter = painterResource(id = R.drawable.info),
                     contentDescription = "Info",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)

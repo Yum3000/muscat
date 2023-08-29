@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import ru.byum.muscat.ui.Loader
@@ -102,7 +103,8 @@ fun FolderArtistsScreen(
                                         .padding(10.dp)
                                         .clickable {
                                             navController.navigate("artistScreen/${artist.id}")
-                                        }
+                                        },
+                                    color = Color.Black
                                 )
 
                                 Spacer(
@@ -116,6 +118,7 @@ fun FolderArtistsScreen(
                                     Icon(
                                         Icons.Filled.Delete,
                                         contentDescription = "delete",
+                                        tint = Color.Black
                                     )
                                 }
                             }

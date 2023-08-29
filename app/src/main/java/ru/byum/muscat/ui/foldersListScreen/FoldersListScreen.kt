@@ -1,5 +1,6 @@
 package ru.byum.muscat.ui.foldersListScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -253,8 +254,17 @@ fun FoldersList(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(modifier = Modifier.padding(start = 10.dp)) {
                                 when (folder.type) {
-                                    FolderType.ARTIST -> Icon(Icons.Rounded.Person, null)
-                                    FolderType.RELEASES -> Icon(Icons.Rounded.ThumbUp, null)
+                                    FolderType.ARTIST -> Image(
+                                        painter = painterResource(id = R.drawable.artist),
+                                        contentDescription = null,
+                                    )
+
+                                    //Icon(R.drawable.name, null)
+                                    FolderType.RELEASES -> Image(
+                                        painter = painterResource(id = R.drawable.disk),
+                                        contentDescription = null,
+                                    )
+                                        //Icon(Icons.Rounded.ThumbUp, null)
                                 }
                             }
                             Text(
@@ -266,7 +276,8 @@ fun FoldersList(
                                     .clickable {
                                         navController.navigate(
                                             "folder/${folder.id}?folderType=${folder.type}?folderTitle=${folder.title}")
-                                    }
+                                    },
+                                color = Color.Black
                             )
 
                             Spacer(
@@ -280,6 +291,7 @@ fun FoldersList(
                                 Icon(
                                     Icons.Filled.Delete,
                                     contentDescription = "delete",
+                                    tint = Color.Black
                                 )
                             }
                         }
