@@ -26,5 +26,6 @@ data class ReleaseNetwork(
     @JsonProperty("year") val year: String,
     @JsonProperty("artists") val artists: List<ReleaseArtist>,
     @JsonProperty("images") val images: List<Image>,
-    @JsonProperty("tracklist") val tracklist: List<Track>
+    @JsonProperty("tracklist") val tracklist: List<Track>,
+    @JsonProperty("genres") val genres: List<String>,
 )

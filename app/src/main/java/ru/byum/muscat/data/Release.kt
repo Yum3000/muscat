@@ -7,5 +7,6 @@ data class Release(
     val artist: String = "",
     val image: String = "",
     val tracklist: List<String>,
+    var genre: String = "",
     var rating: Int = 0,
 )

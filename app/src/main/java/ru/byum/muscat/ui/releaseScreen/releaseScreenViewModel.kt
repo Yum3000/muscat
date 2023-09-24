@@ -43,12 +43,12 @@ class ReleaseScreenViewModel @Inject constructor(
         }
     }
 
-    fun setReleaseRating(releaseID: Int, rating: Int){
+    fun setReleaseRating(releaseID: Int, rating: Int) {
         val release = _release.value
         release?.rating = rating
         _release.update { release }
         viewModelScope.launch(Dispatchers.IO) {
-            musicRepository.setRating(releaseID, rating)
+            musicRepository.setReleaseRating(releaseID, rating)
         }
     }
 }

@@ -13,13 +13,15 @@ interface MusicRepository {
     suspend fun searchArtists(query: String): NetworkArtistsSearchResults?
     suspend fun getArtistReleases(id: Int): List<Release>
     suspend fun getRelease(id: Int): Release?
-    suspend fun setRating(id: Int, rating: Int)
+    suspend fun setRating(id: Int, rating: Int, genre: String = "")
+    suspend fun setReleaseRating(id: Int, rating: Int)
+
 
     val folders: Flow<List<Folder>>
     suspend fun createFolder(title: String, type: FolderType)
     suspend fun deleteFolder(id: Int)
 
-    suspend fun removeItemFromFolder(folder: Int, artistID: Int)
+    suspend fun removeItemFromFolder(folder: Int, itemID: Int)
     suspend fun getFolderItems(id: Int): List<String>
     suspend fun getFolderReleases(id: Int): List<Release>
 
@@ -30,7 +32,24 @@ interface MusicRepository {
 
     suspend fun getFoldersWithItem(itemID: Int): List<Int>
     suspend fun toggleItemInFolder(folder: Int, item: Int)
+
+    suspend fun getRatingStats(): RatingStats
+    suspend fun getFoldersStats(): FoldersStats
 }
+
+data class FoldersStats(
+    val count: Int,
+    val biggest: Pair<String, Int>,
+    val smallest: Pair<String, Int>,
+    val artistCount: Int,
+    val releaseCount: Int,
+    val itemsCount: Int,
+)
+
+data class RatingStats(
+    val genresStat: Map<String, Int>,
+    val counts: IntArray,
+)
 
 class DefaultMusicRepository @Inject constructor(
     private val musicDao: MusicDao,
@@ -42,6 +61,61 @@ class DefaultMusicRepository @Inject constructor(
 
     override suspend fun searchArtists(query: String): NetworkArtistsSearchResults? {
         return discogs.searchArtists(query)
+    }
+
+    override suspend fun getRatingStats(): RatingStats {
+        val counts = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        val genreStat = mutableMapOf<String, Int>()
+        val ratings = musicDao.getAllRatings()
+        ratings.forEach {
+            if (it.genre.isNotEmpty()) {
+                genreStat[it.genre] = genreStat.getOrElse(it.genre, { 0 }) + 1
+            }
+            counts[it.rating - 1] += 1
+        }
+
+        return RatingStats(genreStat, counts)
+    }
+
+    override suspend fun getFoldersStats(): FoldersStats {
+        val folders = musicDao.getAllFoldersNow()
+        val foldersCounts = mutableMapOf<String, Int>()
+        var maxFolderTitle = ""
+        var maxFolderCount = Int.MIN_VALUE
+        var minFolderTitle = ""
+        var minFolderCount = Int.MAX_VALUE
+        var releaseFolderCount = 0
+        var artistFolderCount = 0
+        var itemsCount = 0
+
+        folders.forEach {
+            val count = musicDao.getFolderItems(it.id).size
+
+            itemsCount += count
+
+            if (count > maxFolderCount) {
+                maxFolderCount = count
+                maxFolderTitle = it.title
+            }
+            if (count < minFolderCount) {
+                minFolderCount = count
+                minFolderTitle = it.title
+            }
+
+            if (it.type == FolderType.RELEASES) releaseFolderCount += 1
+            if (it.type == FolderType.ARTIST) artistFolderCount += 1
+
+            foldersCounts[it.title] = count
+        }
+
+        return FoldersStats(
+            count = folders.size,
+            Pair(maxFolderTitle, maxFolderCount),
+            Pair(minFolderTitle, minFolderCount),
+            artistFolderCount,
+            releaseFolderCount,
+            itemsCount
+        )
     }
 
     override suspend fun getArtistReleases(id: Int): List<Release> {
@@ -66,8 +140,13 @@ class DefaultMusicRepository @Inject constructor(
 
     }
 
-    override suspend fun setRating(id: Int, rating: Int) {
-        musicDao.setRating(Rating(id, rating))
+    override suspend fun setRating(id: Int, rating: Int, genre: String) {
+        musicDao.setRating(Rating(id, rating, genre))
+    }
+
+    override suspend fun setReleaseRating(id: Int, rating: Int) {
+        val release = discogs.getRelease(id)?.toRelease()
+        musicDao.setRating(Rating(id, rating, release?.genre ?: ""))
     }
 
     override val folders: Flow<List<Folder>> = musicDao.getAllFolders()

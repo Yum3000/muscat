@@ -20,6 +20,9 @@ interface MusicDao {
     @Query("SELECT * FROM Folder")
     fun getAllFolders(): Flow<List<Folder>>
 
+    @Query("SELECT * FROM Folder")
+    fun getAllFoldersNow(): List<Folder>
+
     @Insert(entity = Folder::class)
     fun createFolder(folder: Folder)
 

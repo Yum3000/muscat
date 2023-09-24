@@ -42,20 +42,20 @@ class FolderReleasesViewModel @Inject constructor(
 
     fun setReleaseRating(releaseID: Int, rating: Int) {
         val releases = _releases.value.toMutableList()
-        val release = releases.find { it.id == releaseID }
-        release?.rating = rating
+        val release = releases.find { it.id == releaseID } ?: return
+        release.rating = rating
 
         _releases.update { releases }
 
         viewModelScope.launch(Dispatchers.IO) {
-            musicRepository.setRating(releaseID, rating)
+            musicRepository.setReleaseRating(releaseID, rating)
         }
     }
 
     fun deleteRelease(folder: Int, releaseID: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             musicRepository.removeItemFromFolder(folder, releaseID)
-            _releases.update { musicRepository.getFolderReleases(folder)  }
+            _releases.update { musicRepository.getFolderReleases(folder) }
         }
     }
 }

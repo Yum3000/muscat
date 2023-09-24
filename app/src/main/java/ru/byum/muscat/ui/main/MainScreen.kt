@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -124,7 +122,7 @@ internal fun MainScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.folder),
+                    painter = painterResource(id = R.drawable.folder_icon),
                     contentDescription = "Folders",
                     //tint = Color.White,
                     modifier = Modifier.size(45.dp)
@@ -162,7 +160,7 @@ internal fun MainScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.statistical),
+                    painter = painterResource(id = R.drawable.stats_icon),
                     contentDescription = "Stats",
                     tint = Color.White,
                     modifier = Modifier.size(45.dp)

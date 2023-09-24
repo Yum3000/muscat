@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Rating(
     @PrimaryKey
     val itemId: Int,
-    val rating: Int
+    val rating: Int,
+    val genre: String,
 )
