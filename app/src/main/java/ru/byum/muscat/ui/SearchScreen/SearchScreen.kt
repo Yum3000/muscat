@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -52,6 +53,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.byum.muscat.R
@@ -78,6 +80,7 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(80.dp),
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.width(96.dp),
@@ -92,6 +95,7 @@ fun SearchScreen(
                 },
                 title = {
                     SearchBar(
+                        //modifier = Modifier.
                         query = text,
                         onQueryChange = { text = it },
                         onSearch = {
@@ -102,11 +106,12 @@ fun SearchScreen(
                         },
                         active = false,
                         onActiveChange = { active = it },
-                        // ????
-                        placeholder = { Text(text = "Search HERE", fontSize = 20.sp) },
+
+                        placeholder = { Text(text = "Введите запрос")},//, fontSize = 15.sp) },
+                        //textStyle = TextStyle(fontSize = 11.sp),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = Icons.Default.Home,
                                 contentDescription = "Search"
                             )
                         },

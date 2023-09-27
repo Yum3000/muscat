@@ -178,12 +178,12 @@ fun FoldersListScreen(
                     TextField(
                         value = message.value,
                         textStyle = TextStyle(fontSize = 20.sp),
-                        placeholder = { Text(text = "Enter title of a new folder") },
+                        placeholder = { Text(text = "Введите название новой папки") },
                         onValueChange = { newText -> message.value = newText },
                         singleLine = true,
                     )
 
-                    Text(text = "Select type for a new folder")
+                    Text(text = "Выберите тип папки")
 
                     val createFolderType by viewModel.createFolderType.collectAsState()
                     Row {
@@ -225,7 +225,7 @@ fun FoldersListScreen(
                         }
 
                     ) {
-                        Text(text = "Create new folder")
+                        Text(text = "Создать папку")
                     }
                 }
             }

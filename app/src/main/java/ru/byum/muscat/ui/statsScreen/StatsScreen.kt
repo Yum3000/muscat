@@ -1,6 +1,5 @@
 package ru.byum.muscat.ui.statsScreen
 
-
 import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -26,8 +25,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -46,32 +48,85 @@ fun StatsScreen(
     val data = viewModel.data.collectAsState().value
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.padding(60.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Всего папок ${data.foldersCount} c ${data.itemsInFoldersCount} элементами")
+        Text(text = "Количество папок: ",
+            textAlign = TextAlign.Center,
+            color = Color(0, 12, 120), fontSize = 24.sp,
+            fontFamily = FontFamily.SansSerif
+            )
+        Text(text="${data.foldersCount}",
+            color = Color(133, 8, 8), fontSize = 20.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontStyle = FontStyle.Italic
+        )
 
-        Text(text = " (${data.artistFoldersCount} с исполнителями, ${data.releaseFoldersCount} с альбомами.)")
+        Text(text = "(${data.artistFoldersCount} с исполнителями, ${data.releaseFoldersCount} с альбомами)",
+            color = Color(0, 12, 120), fontSize = 20.sp,
+            fontFamily = FontFamily.SansSerif,)
+            //textAlign = TextAlign.Center)
+
+        Text(text="Количество элементов: ",
+            color = Color(0, 12, 120), fontSize = 24.sp,
+            fontFamily = FontFamily.SansSerif,)
+
+        Text(text="${data.itemsInFoldersCount}",
+            color = Color(133, 8, 8), fontSize = 20.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontStyle = FontStyle.Italic
+        )
 
         if (data.biggestFolder.isNotEmpty()) {
-            Text(text = "Самая большая папка - ${data.biggestFolder} (${data.biggestFolderItemsCount} элементов).")
+            Text(text = "Самая большая папка: ",
+                color = Color(0, 12, 120), fontSize = 22.sp,
+                fontFamily = FontFamily.SansSerif)
+            Text(text="${data.biggestFolder}",
+                color = Color(133, 8, 8), fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontStyle = FontStyle.Italic
+            )
+            Text(text = "(${data.biggestFolderItemsCount} элементов)",
+                color = Color(0, 12, 120), fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif)
+
             if (data.biggestFolder != data.smallestFolder) {
-                Text(text = "Самая маленькая - ${data.smallestFolder} (${data.smallestFolderItemsCount} элементов).")
+                Text(text = "Самая маленькая: ",
+                    color = Color(0, 12, 120), fontSize = 22.sp,
+                    fontFamily = FontFamily.SansSerif)
+                Text("${data.smallestFolder}",
+                    color = Color(133, 8, 8), fontSize = 20.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontStyle = FontStyle.Italic)
+
+                Text(text="(${data.smallestFolderItemsCount} элементов)",
+                    color = Color(0, 12, 120), fontSize = 20.sp,
+                    fontFamily = FontFamily.SansSerif)
             }
         }
 
         if (data.ratingsCounts.find { it > 0 } != null) {
-            Text(text = "Распределение оценок:")
+            Text(text = "Распределение оценок:",
+                color = Color(0, 12, 120), fontSize = 22.sp,
+                fontFamily = FontFamily.SansSerif)
             for (i in 0..9) {
-                Text(text = "${i + 1} - ${data.ratingsCounts[i]}")
+                Text(text = "${i + 1} - ${data.ratingsCounts[i]}",
+                    color = Color(0, 12, 120), fontSize = 16.sp,
+                    fontFamily = FontFamily.SansSerif)
             }
         }
 
         if (data.mostRatedGenres.isNotEmpty()) {
-            Text(text = "Жанры с большим количеством оценок: ${data.mostRatedGenres.take(3).joinToString(", ")}")
-        }
+            Text(text = "Жанры с наибольшим количеством оценок: ",
+                color = Color(0, 12, 120), fontSize = 22.sp,
+                fontFamily = FontFamily.SansSerif)
 
+            Text(text="${data.mostRatedGenres.take(3).joinToString(", ")}",
+                color = Color(133, 8, 8), fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontStyle = FontStyle.Italic
+            )
+        }
     }
 
     Row(

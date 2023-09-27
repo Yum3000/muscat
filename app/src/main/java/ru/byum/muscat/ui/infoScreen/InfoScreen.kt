@@ -56,7 +56,7 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController) {
     Column(
         modifier
             .fillMaxSize()
-            .padding(top = 30.dp),
+            .padding(top = 25.dp),
         //verticalArrangement = Arrangement.Center,
         //horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -84,11 +84,13 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController) {
                             )
 
                             append(" - поиск информации об исполнителе или альбоме.\n" +
-                                    "С помощью меню справа выберите параметр поиска: Artist или Release.")
+                                    "С помощью меню справа выберите параметр поиска: Artist или Release. Введите\n" +
+                            "запрос и нажмите ввод.\n" +
+                            "С помощью кнопки + можно добавлять элементы в созданные ранее папки.")
                         },
                         color = Color(0, 12, 120), fontSize = 20.sp,
                         style = androidx.compose.ui.text.TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = Modifier.padding(8.dp)
+                        //modifier = Modifier.padding(2.dp)
                     )
             }
         }
@@ -118,12 +120,12 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController) {
 
                         append(" - список персональных папок.\n" +
                                 "Чтобы создать папку, нажмите +, введите название папки,\n" +
-                                "выберите тип папки Artist или Release и нажмите create folder.\n" +
-                                "Чтобы удалить папку, нажмите иконку корзины справа от ее названия.")
+                                "выберите тип папки Artist или Release и нажмите 'Создать папку'.\n" +
+                                "Чтобы удалить папку, нажмите значок корзины справа от ее названия.")
                     },
                     color = Color(0, 12, 120), fontSize = 20.sp,
                     style = androidx.compose.ui.text.TextStyle(fontStyle = FontStyle.Italic),
-                    modifier = Modifier.padding(8.dp)
+                    //modifier = Modifier.padding(2.dp)
                 )
             }
 
@@ -151,12 +153,12 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController) {
                                 fontWeight = FontWeight.Bold)),
                         )
 
-                        append(" - статистика рейтинга и папок.\n" +
-                                "...")
+                        append(" - статистика рейтинга и папок пользователя.\n"
+                                )
                     },
                     color = Color(0, 12, 120), fontSize = 20.sp,
                     style = androidx.compose.ui.text.TextStyle(fontStyle = FontStyle.Italic),
-                    modifier = Modifier.padding(8.dp)
+                    //modifier = Modifier.padding(2.dp)
                 )
             }
         }
@@ -183,11 +185,11 @@ fun InfoScreen (modifier: Modifier = Modifier, navController: NavController) {
                                 fontWeight = FontWeight.Bold)),
                         )
 
-                        append(" - общая информация для пользователей.")
+                        append(" - общая информация для пользователя.")
                     },
                     color = Color(0, 12, 120), fontSize = 20.sp,
                     style = androidx.compose.ui.text.TextStyle(fontStyle = FontStyle.Italic),
-                    modifier = Modifier.padding(8.dp)
+                    //modifier = Modifier.padding(2.dp)
                 )
             }
         }

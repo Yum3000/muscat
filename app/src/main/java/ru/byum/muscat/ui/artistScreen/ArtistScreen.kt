@@ -222,16 +222,18 @@ fun ArtistReleasesList(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
 
                     Column(
                         modifier = Modifier.background(Color.Transparent)
                     ) {
                         Text(
                             text = "${it.title}\n${it.year}",
-                            color = Color(0, 12, 120), fontSize = 30.sp,
+                            color = Color(0, 12, 120), fontSize = 28.sp,
                             fontFamily = FontFamily.SansSerif
                         )
+
+                        Spacer(modifier = Modifier.height(20.dp))
 
                         RatingBar(it.id, it.rating, onRatingChange)
 
